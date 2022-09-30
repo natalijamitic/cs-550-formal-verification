@@ -1,6 +1,7 @@
 import stainless.annotation._
 import stainless.collection._
 import stainless.lang._
+import stainless.equations._
 
 object SubList {
  
@@ -129,14 +130,19 @@ object SubList {
   )
 
 
-  
-/*
-
   def subListPrepend[T](l1: List[T], l2: List[T]): Unit = {
-    
+    (l1) match {
+      case (Nil())          => subListRefl(l2)
+      case (Cons(x,Nil()))  => subListRefl(l2)
+      case (Cons(x, xs))    => subListPrepend(xs, l2)
+    }
+
   }.ensuring(_ => 
     subList(l2, l1 ++ l2)  
   )
+
+  
+/*
 
   def subListConcatRight[T](l: List[T], l1: List[T], l2: List[T]): Unit = {
     require(subList(l, l1))
