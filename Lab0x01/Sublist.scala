@@ -141,7 +141,18 @@ object SubList {
     subList(l2, l1 ++ l2)  
   )
 
-  
+  def subListConcatLeft[T](l: List[T], l1: List[T], l2: List[T]): Unit = {
+    require(subList(l, l2))
+
+    l1 match {
+      case (Nil()) => ()
+      case (Cons(x, Nil())) => ()
+      case (Cons(x, xs)) => subListConcatLeft(l, xs, l2)
+    }
+  }.ensuring(_ =>
+    subList(l1 ++ l, l1 ++ l2)  
+  )
+
 /*
 
   def subListConcatRight[T](l: List[T], l1: List[T], l2: List[T]): Unit = {
@@ -152,12 +163,6 @@ object SubList {
   )
 
 
-  def subListConcatLeft[T](l: List[T], l1: List[T], l2: List[T]): Unit = {
-    require(subList(l, l2))
-
-  }.ensuring(_ =>
-    subList(l1 ++ l, l1 ++ l2)  
-  )
 
 
  
