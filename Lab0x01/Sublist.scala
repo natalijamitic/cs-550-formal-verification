@@ -1,3 +1,5 @@
+// ../../stainless/stainless.sh SubList.scala --watch --config-file=stainless.conf
+
 import stainless.annotation._
 import stainless.collection._
 import stainless.lang._
@@ -40,6 +42,8 @@ object SubList {
 
   def subListTail[T](l1: List[T], l2: List[T]): Unit = {
     require(!l1.isEmpty && subList(l1, l2))
+
+    decreases(l2)
 
     (l1, l2) match {
       case (Cons(x, xs), Cons(y, ys)) => {
