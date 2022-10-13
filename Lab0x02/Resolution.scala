@@ -1,3 +1,4 @@
+// ../../stainless/stainless.sh Resolution.scala --watch --config-file=stainless.conf
 //> using jar "stainless-library_2.13-0.9.6.jar"
 
 import stainless.lang.*
@@ -254,10 +255,12 @@ object Resolution {
   def skoleHelp(f: Formula, memory_list: List[Term], memory_map: Map[Identifier, List[Term]]): Formula = {
     f match {
       case Exists(variable, inner)    => {
+        // add new variable/identifier to map together with previously collected list
         val new_memory_map = memory_map ++ Map(variable.name -> memory_list)
         skoleHelp(inner, memory_list, new_memory_map)
       }
       case Forall(variable, inner)    => {
+        // add new variable/identifier to list
         val new_memory_list = memory_list :+ variable
         Forall(variable, skoleHelp(inner, new_memory_list, memory_map))
       }
@@ -265,17 +268,19 @@ object Resolution {
       case And(l, r)                  => And(skoleHelp(l, memory_list, memory_map), skoleHelp(r, memory_list, memory_map))
       case Neg(inner)                 => Neg(skoleHelp(inner,  memory_list, memory_map))
       case Predicate(name, children)  => {
-
-        //def substitute(t: Term, subst: Map[Identifier, Term]): Term 
+        // for each child change its identifier with Function(ident, substit) if exists in map
         Predicate(name, children.map(child => {
           var ident:Identifier = Named("naca")
+          // get name from child identifier
           child match {
             case Var(name) => ident = name
             case Function(name, _) => ident = name
           }
+
+          // if child is in map then substitute it with Function(identifier, substitList)
           if (memory_map contains ident) {
             val subList = memory_map(ident)
-            substitute(child, Map(ident -> Function(ident, subList)))
+            substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
           } else {
             child
           }
