@@ -280,13 +280,16 @@ object Resolution {
 
           // if child is in map then substitute it with Function(identifier, substitList)
           if (memory_map contains ident) {
-                val subList = memory_map(ident)
+                var subList: List[Term] = memory_map(ident)
+
+                if subList.size == 0 then
+                  val freeIdents: List[Identifier] = freeVariables(f) - ident
+                  subList = freeIdents.map(identifier => new Var(identifier))
+                
                 if subList.size > 0 then
                   substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
                 else {
-                  val freeIdents: List[Identifier] = freeVariables(f) - ident
-                  val freeVars: List[Term] = freeIdents.map(identifier => new Var(identifier))
-                  substitute(child, Map(ident -> Function(ident, freeVars)))
+                  child
                 }
               } else {
                 child
