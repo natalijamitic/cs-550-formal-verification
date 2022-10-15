@@ -254,10 +254,16 @@ object Resolution {
 
   def skoleHelp(f: Formula, memory_list: List[Term], memory_map: Map[Identifier, List[Term]]): Formula = {
     f match {
+      case Implies(_, _) => f
       case Exists(variable, inner)    => {
         // add new variable/identifier to map together with previously collected list
-        val new_memory_map = memory_map ++ Map(variable.name -> memory_list)
-        skoleHelp(inner, memory_list, new_memory_map)
+        memory_list match {
+          case Nil() => skoleHelp(inner, memory_list, memory_map)
+          case _ => {
+            val new_memory_map = memory_map ++ Map(variable.name -> memory_list)
+            skoleHelp(inner, memory_list, new_memory_map)
+          }
+        }
       }
       case Forall(variable, inner)    => {
         // add new variable/identifier to list
@@ -279,11 +285,11 @@ object Resolution {
 
           // if child is in map then substitute it with Function(identifier, substitList)
           if (memory_map contains ident) {
-            val subList = memory_map(ident)
-            substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
-          } else {
-            child
-          }
+                val subList = memory_map(ident)
+                substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
+              } else {
+                child
+              }
         }))
       }
     }
@@ -303,6 +309,8 @@ object Resolution {
 
   def prenexSkoleHelp(f: Formula): Formula = {
     f match {
+      case Implies(_, _) => f
+      case Exists(_, _) => f
       case And(l, r)                => And(prenexSkoleHelp(l), prenexSkoleHelp(r))
       case Or(l, r)                 => Or(prenexSkoleHelp(l), prenexSkoleHelp(r))
       case Neg(inner)               => Neg(prenexSkoleHelp(inner))
