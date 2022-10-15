@@ -284,7 +284,7 @@ object Resolution {
                 if subList.size > 0 then
                   substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
                 else {
-                  val freeIdents: List[Identifier] = freeVariables(child)
+                  val freeIdents: List[Identifier] = freeVariables(f) - ident
                   val freeVars: List[Term] = freeIdents.map(identifier => new Var(identifier))
                   substitute(child, Map(ident -> Function(ident, freeVars)))
                 }
