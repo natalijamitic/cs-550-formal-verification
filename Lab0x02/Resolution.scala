@@ -257,13 +257,8 @@ object Resolution {
       case Implies(_, _) => f
       case Exists(variable, inner)    => {
         // add new variable/identifier to map together with previously collected list
-        memory_list match {
-          case Nil() => skoleHelp(inner, memory_list, memory_map)
-          case _ => {
-            val new_memory_map = memory_map ++ Map(variable.name -> memory_list)
-            skoleHelp(inner, memory_list, new_memory_map)
-          }
-        }
+        val new_memory_map = memory_map ++ Map(variable.name -> memory_list)
+        skoleHelp(inner, memory_list, new_memory_map)
       }
       case Forall(variable, inner)    => {
         // add new variable/identifier to list
@@ -286,7 +281,13 @@ object Resolution {
           // if child is in map then substitute it with Function(identifier, substitList)
           if (memory_map contains ident) {
                 val subList = memory_map(ident)
-                substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
+                if subList.size > 0 then
+                  substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
+                else {
+                  val freeIdents: List[Identifier] = freeVariables(child)
+                  val freeVars: List[Term] = freeIdents.map(identifier => new Var(identifier))
+                  substitute(child, Map(ident -> Function(ident, freeVars)))
+                }
               } else {
                 child
               }
