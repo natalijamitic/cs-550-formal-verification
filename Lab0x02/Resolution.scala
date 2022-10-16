@@ -366,10 +366,46 @@ object Resolution {
   }
 
 
+  def convertToClause(f:Formula): Clause = {
+    f match {
+      case Neg(inner)               => List(Atom(f))  
+      case Predicate(_, _)          => List(Atom(f))
+      case Or(l,r)                  => {
+           convertToClause(l) ++ convertToClause(r)
+      }
+    }
+
+  }
+
+  def convertToListOfClauses(f:Formula):List[Clause] = {
+    f match {
+      case And(l,r) => {
+        (l,r) match  {
+          case (And(_,_), And(_,_))=>{
+            convertToListOfClauses(l) ++ convertToListOfClauses(r)
+          }
+          case (And(_,_), _) => {
+            convertToListOfClauses(l) ++ List(convertToClause(r))
+          }
+          case (_, And(_,_)) => {
+            List(convertToClause(l)) ++ convertToListOfClauses(r)
+          }
+          case(_, _) => {
+            List(convertToClause(l)) ++ List(convertToClause(r))
+          }
+        }
+      }
+      case(_) => {
+        List(convertToClause(f))
+      }
+    }
+  }
+
+
   def conjunctionPrenexSkolemizationNegation(f: Formula): List[Clause] = {
     var prenex = prenexSkolemizationNegation(f)
     var cnf = CNF(prenex)
-    (???): List[Clause]
+    convertToListOfClauses(cnf)
   }
 
 
