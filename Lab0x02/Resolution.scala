@@ -322,8 +322,54 @@ object Resolution {
    * This may exponentially blowup the size in the formula in general.
    * If we only preserve satisfiability, we can avoid it by introducing fresh variables, but that is not asked here.
    */
+
+  def CNF(f: Formula): Formula = {
+    f match {
+      case And(l, r)                => And(CNF(l),CNF(r))
+      case Or(l, r)                 => {
+        val orLeft = CNF(l)
+        val orRight = CNF(r)
+        (orLeft, orRight) match {
+          case (And(landLeft,landRight), And(randLeft,randRight)) => {
+           And(
+            And(
+              Or(landLeft, randLeft),
+              Or(landLeft, randRight)
+            ),
+            And(
+              Or(landRight, randLeft),
+              Or(landRight, randRight)
+            ),
+           )
+          }
+          case (And(andLeft,andRight), _) => {
+            And(
+              Or(andLeft, orRight),
+              Or(andRight, orRight)
+            )
+          }
+          case (_, And(andLeft,andRight)) => {
+            And(
+              Or(andLeft, orRight),
+              Or(andRight, orRight)
+            )
+          }
+          case (_,_) => {
+            Or(orLeft,orRight)
+          }
+        }
+
+      }
+      case Neg(inner)               => f
+      case Predicate(_, _)          => f
+    }
+  }
+
+
   def conjunctionPrenexSkolemizationNegation(f: Formula): List[Clause] = {
-    (??? : List[Clause])
+    var prenex = prenexSkolemizationNegation(f)
+    var cnf = CNF(prenex)
+    (???): List[Clause]
   }
 
 
