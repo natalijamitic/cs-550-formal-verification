@@ -251,13 +251,15 @@ object Resolution {
     res.isNNF
   )
 
-
-  def skoleHelp(f: Formula, memory_list: List[Term], memory_map: Map[Identifier, List[Term]]): Formula = {
+  def skoleHelp(f: Formula, memory_list: List[Term], memory_map: Map[Identifier, Term]): Formula = {
     f match {
       case Implies(_, _) => f
       case Exists(variable, inner)    => {
         // add new variable/identifier to map together with previously collected list
-        val new_memory_map = memory_map ++ Map(variable.name -> memory_list)
+        // val freeIdents: List[Identifier] = freeVariables(f)
+        // var freeIdentsList:List[Term] = freeIdents.map(identifier => new Var(identifier))
+        // var new_memory_list = freeIdentsList ++ memory_list
+        val new_memory_map = memory_map ++ Map(variable.name -> Function(variable.name,memory_list))
         skoleHelp(inner, memory_list, new_memory_map)
       }
       case Forall(variable, inner)    => {
@@ -270,34 +272,12 @@ object Resolution {
       case Neg(inner)                 => Neg(skoleHelp(inner,  memory_list, memory_map))
       case Predicate(name, children)  => {
         // for each child change its identifier with Function(ident, substit) if exists in map
-        Predicate(name, children.map(child => {
-          var ident:Identifier = Named("naca")
-          // get name from child identifier
-          child match {
-            case Var(name) => ident = name
-            case Function(name, _) => ident = name
-          }
-
-          // if child is in map then substitute it with Function(identifier, substitList)
-          if (memory_map contains ident) {
-                var subList: List[Term] = memory_map(ident)
-
-                if subList.size == 0 then
-                  val freeIdents: List[Identifier] = freeVariables(f) - ident
-                  subList = freeIdents.map(identifier => new Var(identifier))
-                
-                if subList.size > 0 then
-                  substitute(child, Map(ident -> Function(ident, subList))) //substitute(t: Term, subst: Map[Identifier, Term]): Term 
-                else {
-                  child
-                }
-              } else {
-                child
-              }
-        }))
+        Predicate(name, children.map(substitute(_,memory_map)))
       }
     }
-  }
+  }.ensuring(res =>
+    res.isNNF && res.containsNoExistential
+  )
 
   /*
    * Put the formula in negation normal form and then eliminates existential quantifiers using Skolemization
@@ -321,7 +301,9 @@ object Resolution {
       case Forall(variable, inner)  => prenexSkoleHelp(inner)
       case Predicate(_, _)          => f
     }
-  }
+  }.ensuring(res =>
+    res.isNNF && res.containsNoUniversal && res.containsNoExistential
+  )
 
   /*
    * Return the matrix of f in negation normal, skolemized form and make sure variables are uniquely named. Since there are no existential
