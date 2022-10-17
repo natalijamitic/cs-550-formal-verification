@@ -351,8 +351,8 @@ object Resolution {
           }
           case (_, And(andLeft,andRight)) => {
             And(
-              Or(andLeft, orRight),
-              Or(andRight, orRight)
+              Or(orLeft, andLeft),
+              Or(orLeft, andRight)
             )
           }
           case (_,_) => {
