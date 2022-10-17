@@ -456,7 +456,13 @@ object Resolution {
               val formulas_right_subst =  originalProof(j)._1.map(atom => mapPredicateChildrenFromFormula(atom.get, subst))
               val formulas_clause = stmt._1.map(atom => atom.get)
 
-              filterLeftRightFormulas(formulas_left_subst, formulas_right_subst, formulas_clause.toSet)
+              if (filterLeftRightFormulas(formulas_left_subst, formulas_right_subst, formulas_clause.toSet)) {
+                println("true, ovde")
+                checkRPHelp(rest, index+1, originalProof)
+              } else {
+                println("Kraj")
+                false
+              }
               
             }
           }
@@ -487,6 +493,7 @@ object Resolution {
     val Cons(h, t) = l
     t.foldLeft(h)(Or(_: Formula, _: Formula))
   }
+
 
   def solveMansionMystery: Unit = {
     // The three suspects:
@@ -532,10 +539,10 @@ object Resolution {
     )
 
     val r5 = conjunctionPrenexSkolemizationNegation(mansionMystery)
-    
+
     val step_16 = (
       List(Atom(hates(a, a))),
-      Deduced((0, 5), Map(Named("x6") -> a))
+      Deduced((10, 15), Map(Synthetic(6) -> a))
     )
 
     val step_17 = (
@@ -543,8 +550,8 @@ object Resolution {
         Atom(hates(b, a))
       ),
       Deduced(
-        (2, 16),
-        Map(Named("x9") -> a)
+        (13, 16),
+        Map(Synthetic(9) -> a)
       )
     )
 
@@ -553,8 +560,8 @@ object Resolution {
         Atom(Neg(hates(c, a)))
       ),
       Deduced(
-        (7, 16),
-        Map(Named("x4") -> a)
+        (8, 16),
+        Map(Synthetic(4) -> a)
       )
     )
 
@@ -563,8 +570,8 @@ object Resolution {
         Atom(Neg(killed(c, a)))
       ),
       Deduced(
-        (9, 18),
-        Map(Named("x2") -> c, Named("x3") -> a)
+        (6, 18),
+        Map(Synthetic(2) -> c, Synthetic(3) -> a)
       )
     )
 
@@ -581,8 +588,8 @@ object Resolution {
         Atom(Neg(hates(a, b)))
       ),
       Deduced(
-        (20, 6),
-        Map(Named("x5") -> b)
+        (20, 9),
+        Map(Synthetic(5) -> b)
       )
     )
 
@@ -644,8 +651,8 @@ object Resolution {
         Atom(hates(a, c))
       ),
       Deduced(
-        (5, 26),
-        Map(Named("x6") -> c)
+        (10, 26),
+        Map(Synthetic(6) -> c)
       )
     )
 
@@ -654,33 +661,33 @@ object Resolution {
         Atom(hates(b, c))
       ),
       Deduced(
-        (2, 27),
-        Map(Named("x9") -> c)
+        (13, 27),
+        Map(Synthetic(9) -> c)
       )
     )
     
 
     val step_30 = (
       List(
-        Atom(hates(b, Function(Named("x11"), List(b)))),
-        Atom(eq(Function(Named("x11"), List(b)), b))
+        Atom(hates(b, Function(Synthetic(11), List(b)))),
+        Atom(eq(Function(Synthetic(11), List(b)), b))
       ),
       Deduced(
-        (2, 5),
+        (13, 10),
         Map(
-          Named("x9") -> Function(Named("x11"), List(b)),
-          Named("x6") -> Function(Named("x11"), List(b))
+          Synthetic(9)-> Function(Synthetic(11), List(b)),
+          Synthetic(6) -> Function(Synthetic(11), List(b))
         )
       )
     )
     val step_31 = (
       List(
-        Atom(eq(Function(Named("x11"), List(b)), b))
+        Atom(eq(Function(Synthetic(11), List(b)), b))
       ),
       Deduced(
-        (1, 29),
+        (14, 29),
         Map(
-          Named("x10") -> b
+          Synthetic(10) -> b
         )
       )
     )
@@ -697,14 +704,14 @@ object Resolution {
 
     val step_33 = (
       List(
-        Atom(Neg(eq(Function(Named("x11"), List(b)), b))),
+        Atom(Neg(eq(Function(Synthetic(11), List(b)), b))),
         Atom(Neg(hates(b, b)))
       ),
       Deduced(
-        (31, 1),
+        (31, 14),
         Map(
-          Named("x10") -> b,
-          Named("x") -> Function(Named("x11"), List(b)),
+          Synthetic(10) -> b,
+          Named("x") -> Function(Synthetic(11), List(b)),
           Named("y") -> b
         )
       )
@@ -724,8 +731,8 @@ object Resolution {
         Atom(richer(b, a))
       ),
       Deduced(
-        (3, 33),
-        Map(Named("x8") -> b)
+        (12, 33),
+        Map(Synthetic(8) -> b)
       )
     )
 
@@ -734,8 +741,8 @@ object Resolution {
        Atom( Neg(killed(b, a)))
       ),
       Deduced(
-        (8, 34),
-        Map(Named("x2") -> b, Named("x3") -> a)
+        (7, 34),
+        Map(Synthetic(2) -> b, Synthetic(3) -> a)
       )
     )
 
@@ -751,13 +758,13 @@ object Resolution {
 
     val step_38 = (
       List(
-       Atom( Neg(eq(Function(Named("x0"), List()), b))),
-       Atom( Neg(killed(Function(Named("x0"), List()), a)))
+       Atom( Neg(eq(Function(Synthetic(0), List()), b))),
+       Atom( Neg(killed(Function(Synthetic(0), List()), a)))
       ),
       Deduced(
         (35, 36),
         Map(
-          Named("x") -> Function(Named("x0"), List()),
+          Named("x") -> Function(Synthetic(0), List()),
           Named("y") -> b
         )
       )
@@ -765,23 +772,23 @@ object Resolution {
 
     val step_39 = (
       List(
-        Atom(Neg(eq(Function(Named("x0"), List()), b)))
+        Atom(Neg(eq(Function(Synthetic(0), List()), b)))
       ),
       Deduced(
-        (37, 14),
+        (37, 1),
         Map()
       )
     )
 
     val step_40 = (
       List(
-        Atom(Neg(eq(Function(Named("x0"), List()), c))),
-        Atom(Neg(killed(Function(Named("x0"), List()), a)))
+        Atom(Neg(eq(Function(Synthetic(0), List()), c))),
+        Atom(Neg(killed(Function(Synthetic(0), List()), a)))
       ),
       Deduced(
         (19, 36),
         Map(
-          Named("x") -> Function(Named("x0"), List()),
+          Named("x") -> Function(Synthetic(0), List()),
           Named("y") -> c
         )
       )
@@ -789,32 +796,32 @@ object Resolution {
 
     val step_41 = (
       List(
-       Atom( Neg(eq(Function(Named("x0"), List()), c)))
+       Atom( Neg(eq(Function(Synthetic(0), List()), c)))
       ),
       Deduced(
-        (39, 14),
+        (39, 1),
         Map()
       )
     )
 
     val step_42 = (
       List(
-       Atom( eq(Function(Named("x0"), List()), a)),
-       Atom( eq(Function(Named("x0"), List()), b)),
-       Atom( eq(Function(Named("x0"), List()), c))
+       Atom( eq(Function(Synthetic(0), List()), a)),
+       Atom( eq(Function(Synthetic(0), List()), b)),
+       Atom( eq(Function(Synthetic(0), List()), c))
       ),
       Deduced(
-        (10, 15),
+        (0, 5),
         Map(
-          Named("x1") -> Function(Named("x0"), List())
+          Synthetic(1) -> Function(Synthetic(0), List())
         )
       )
     )
 
     val step_43 = (
       List(
-       Atom( eq(Function(Named("x0"), List()), a)),
-       Atom( eq(Function(Named("x0"), List()), b))
+       Atom( eq(Function(Synthetic(0), List()), a)),
+       Atom( eq(Function(Synthetic(0), List()), b))
       ),
       Deduced(
         (41, 40),
@@ -824,7 +831,7 @@ object Resolution {
     )
     val step_44 = (
       List(
-       Atom( eq(Function(Named("x0"), List()), a))
+       Atom( eq(Function(Synthetic(0), List()), a))
       ),
       Deduced(
         (42, 38),
@@ -836,13 +843,13 @@ object Resolution {
 
     val step_45 = (
       List(
-       Atom( Neg(killed(Function(Named("x0"), List()), a))),
+       Atom( Neg(killed(Function(Synthetic(0), List()), a))),
        Atom( killed(a, a))
       ),
       Deduced(
         (36, 43),
         Map(
-          Named("x") -> Function(Named("x0"), List()),
+          Named("x") -> Function(Synthetic(0), List()),
           Named("y") -> a
         )
       )
@@ -851,7 +858,7 @@ object Resolution {
     val step_46 = (
       List(Atom(killed(a, a))),
       Deduced(
-        (44, 14),
+        (44, 1),
         Map()
       )
     )
