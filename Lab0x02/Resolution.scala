@@ -255,15 +255,16 @@ object Resolution {
     f match {
       case Implies(_, _) => f
       case Exists(variable, inner)    => {
-        // add new variable/identifier to map together with previously collected list
         // val freeIdents: List[Identifier] = freeVariables(f)
         // var freeIdentsList:List[Term] = freeIdents.map(identifier => new Var(identifier))
         // var new_memory_list = freeIdentsList ++ memory_list
-        val new_memory_map = memory_map ++ Map(variable.name -> Function(variable.name,memory_list))
+
+        // add exists identifier to map with Function of previously collected list
+        val new_memory_map = memory_map ++ Map(variable.name -> Function(variable.name, memory_list))
         skoleHelp(inner, memory_list, new_memory_map)
       }
       case Forall(variable, inner)    => {
-        // add new variable/identifier to list
+        // add the forAll identifier to list
         val new_memory_list = memory_list :+ variable
         Forall(variable, skoleHelp(inner, new_memory_list, memory_map))
       }
@@ -271,7 +272,7 @@ object Resolution {
       case And(l, r)                  => And(skoleHelp(l, memory_list, memory_map), skoleHelp(r, memory_list, memory_map))
       case Neg(inner)                 => Neg(skoleHelp(inner,  memory_list, memory_map))
       case Predicate(name, children)  => {
-        // for each child change its identifier with Function(ident, substit) if exists in map
+        // for each child change its identifier with entry from map (if such exists)
         Predicate(name, children.map(substitute(_,memory_map)))
       }
     }
@@ -411,7 +412,7 @@ object Resolution {
 
   /*
    * A clause in a proof is either assumed, i.e. it is part of the initial formula, or it is deduced from previous clauses.
-   * A proof is written in a specific order, and a justification should not refer to a previous step.
+   * A proof is written in a specific order, and a justification should not refer to a subsequent step.
    */
   sealed abstract class Justification
   case object Assumed extends Justification
@@ -420,11 +421,57 @@ object Resolution {
 
   type ResolutionProof = List[(Clause, Justification)]
 
+
+  def mapPredicateChildrenFromFormula(f: Formula, subst: Map[Identifier, Term]): Formula = {
+    f match {
+      case Predicate(ident, children) => Predicate(ident, children.map(substitute(_,subst)))
+      case Neg(inner) => Neg(mapPredicateChildrenFromFormula(inner, subst))
+    }
+  }
+
+  def filterLeftRightFormulas(f_left: List[Formula], f_right: List[Formula], clauseSet: Set[Formula]): Boolean = {
+    val matched_idents = f_left.flatMap(x => f_right.map(y => (x, y))).filter {
+      case (left, right) => left == Neg(right) || Neg(left) == right
+    } 
+
+    matched_idents.map((left, right) => {
+      ( 
+        f_left.filter(f => f != left && f != right) ++ 
+        f_right.filter(f => f != left && f != right)
+      ).toSet == clauseSet
+    }).exists(a => a)
+  }
+
+  def checkRPHelp(currentProof: ResolutionProof, index: BigInt, originalProof: ResolutionProof): Boolean = {
+    currentProof match {
+      case (Nil()) => true
+      
+      case (Cons(stmt, rest)) => {
+        stmt._2 match {
+          case Assumed => checkRPHelp(rest, index+1, originalProof)
+          case Deduced((i,j), subst) => {
+            if (i < index && j < index) {
+
+              val formulas_left_subst = originalProof(i)._1.map(atom => mapPredicateChildrenFromFormula(atom.get, subst))
+              val formulas_right_subst =  originalProof(j)._1.map(atom => mapPredicateChildrenFromFormula(atom.get, subst))
+              val stmt_formulas = stmt._1.map(atom => atom.get)
+              filterLeftRightFormulas(formulas_left_subst, formulas_right_subst, stmt_formulas.toSet)
+              
+            } else {
+              false
+            }
+          }
+          case _ => false
+        }
+      }
+    }
+  }
+
   /*
    * Verify if a given proof is correct. The function should verify that every clause is correctly justified (unless assumed).
    */
   def checkResolutionProof(proof: ResolutionProof): Boolean = {
-    (??? : Boolean)
+    checkRPHelp(proof, BigInt(0), proof)
   }
 
   // Smart constructors
