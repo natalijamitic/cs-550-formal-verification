@@ -430,42 +430,43 @@ object Resolution {
   }
 
   def filterLeftRightFormulas(f_left: List[Formula], f_right: List[Formula], clauseSet: Set[Formula]): Boolean = {
+    // Cross product taken from https://stackoverflow.com/a/48162444 & filter (pred, not pred)
     val matched_idents = f_left.flatMap(x => f_right.map(y => (x, y))).filter {
       case (left, right) => left == Neg(right) || Neg(left) == right
     } 
 
+    // Check if clause can be derived from (pred, not pred) - one pair of literals may be resolved at a time
     matched_idents.map((left, right) => {
-      ( 
-        f_left.filter(f => f != left && f != right) ++ 
-        f_right.filter(f => f != left && f != right)
-      ).toSet == clauseSet
+      val literalList = f_left.filter(f => f != left && f != right) ++ 
+                        f_right.filter(f => f != left && f != right)
+      literalList.toSet == clauseSet
     }).exists(a => a)
   }
 
   def checkRPHelp(currentProof: ResolutionProof, index: BigInt, originalProof: ResolutionProof): Boolean = {
     currentProof match {
-      case (Nil()) => true
-      
-      case (Cons(stmt, rest)) => {
+      case (Nil())                    => true
+      case (Cons(stmt, rest))         => {
         stmt._2 match {
-          case Assumed => checkRPHelp(rest, index+1, originalProof)
-          case Deduced((i,j), subst) => {
-            if (i < index && j < index) {
-
+          case Deduced((i,j), subst)          => {
+            if (index <= j || index <= i) then false
+            else {
+              // Map List[Atom] to substituted List[Formula]
               val formulas_left_subst = originalProof(i)._1.map(atom => mapPredicateChildrenFromFormula(atom.get, subst))
               val formulas_right_subst =  originalProof(j)._1.map(atom => mapPredicateChildrenFromFormula(atom.get, subst))
-              val stmt_formulas = stmt._1.map(atom => atom.get)
-              filterLeftRightFormulas(formulas_left_subst, formulas_right_subst, stmt_formulas.toSet)
+              val formulas_clause = stmt._1.map(atom => atom.get)
+
+              filterLeftRightFormulas(formulas_left_subst, formulas_right_subst, formulas_clause.toSet)
               
-            } else {
-              false
             }
           }
-          case _ => false
+          case Assumed                        => checkRPHelp(rest, index+1, originalProof)
+          case _                              => false
         }
       }
     }
   }
+  
 
   /*
    * Verify if a given proof is correct. The function should verify that every clause is correctly justified (unless assumed).
