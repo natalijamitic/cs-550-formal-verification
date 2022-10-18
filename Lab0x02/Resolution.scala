@@ -505,58 +505,6 @@ object Resolution {
   }
 
 
-  def printTree(f: Formula)(indent: Int = 0): Unit = {
-    val indent_str = " " * indent
-    f match {
-      case Predicate(name, children) =>
-        println(s"${indent_str}${f} ")
-      case And(l, r) =>
-        println(s"${indent_str}And(")
-        val children = List(l, r)
-        children.forall { c =>
-          printTree(c)(indent + 2)
-          true
-        }
-        println(s"${indent_str})")
-      case Or(l, r) =>
-        println(s"${indent_str}Or(")
-        val children = List(l, r)
-        children.forall { c =>
-          printTree(c)(indent + 2)
-          true
-        }
-        println(s"${indent_str})")
-      case Implies(left, right) =>
-        printTree(left)(indent + 2)
-        println(s"${indent_str}implies ")
-        printTree(right)(indent + 2)
-      case Neg(inner) =>
-        println(s"${indent_str}Not(")
-        printTree(inner)(indent + 2)
-        println(s"${indent_str})")
-      case Forall(variable, inner) =>
-        println(s"${indent_str}Forall.${variable}(")
-        printTree(inner)(indent + 2)
-        println(s"${indent_str})")
-      case Exists(variable, inner) =>
-        println(s"${indent_str}Exists.${variable}(")
-        printTree(inner)(indent + 2)
-        println(s"${indent_str})")
-    }
-
-  }
-
-  def printClause(clause: Clause): Unit = {
-
-    println("{")
-    clause.forall( c => {
-      printTree(c.get)(3) 
-      true
-    })
-    println("}")
-
-  }
-
   def solveMansionMystery: Unit = {
     // The three suspects:
     val a = Function(Named("Agatha"), Nil())
@@ -601,10 +549,6 @@ object Resolution {
     )
 
     val r5 = conjunctionPrenexSkolemizationNegation(mansionMystery)
-    r5.forall { c =>
-      printClause(c)
-      true
-    }
 
     val step_16 = (
       List(Atom(hates(a, a))),
