@@ -251,26 +251,26 @@ object Resolution {
     res.isNNF
   )
 
-  def skoleHelp(f: Formula, memory_list: List[Term], memory_map: Map[Identifier, Term]): Formula = {
+  def skoleHelp(f: Formula, memory_map: Map[Identifier, Term]): Formula = {
     f match {
       case Implies(_, _) => f
       case Exists(variable, inner)    => {
-        // val freeIdents: List[Identifier] = freeVariables(f)
-        // var freeIdentsList:List[Term] = freeIdents.map(identifier => new Var(identifier))
+        val freeIdents: List[Identifier] = freeVariables(f)
+        var freeIdentsList:List[Term] = freeIdents.map(identifier => new Var(identifier))
         // var new_memory_list = freeIdentsList ++ memory_list
 
         // add exists identifier to map with Function of previously collected list
-        val new_memory_map = memory_map ++ Map(variable.name -> Function(variable.name, memory_list))
-        skoleHelp(inner, memory_list, new_memory_map)
+        val new_memory_map = memory_map ++ Map(variable.name -> Function(variable.name, freeIdentsList))
+        skoleHelp(inner, new_memory_map)
       }
       case Forall(variable, inner)    => {
         // add the forAll identifier to list
-        val new_memory_list = memory_list :+ variable
-        Forall(variable, skoleHelp(inner, new_memory_list, memory_map))
+        // val new_memory_list = memory_list :+ variable
+        Forall(variable, skoleHelp(inner, memory_map))
       }
-      case Or(l, r)                   => Or(skoleHelp(l, memory_list, memory_map), skoleHelp(r, memory_list, memory_map))
-      case And(l, r)                  => And(skoleHelp(l, memory_list, memory_map), skoleHelp(r, memory_list, memory_map))
-      case Neg(inner)                 => Neg(skoleHelp(inner,  memory_list, memory_map))
+      case Or(l, r)                   => Or(skoleHelp(l, memory_map), skoleHelp(r, memory_map))
+      case And(l, r)                  => And(skoleHelp(l, memory_map), skoleHelp(r, memory_map))
+      case Neg(inner)                 => Neg(skoleHelp(inner, memory_map))
       case Predicate(name, children)  => {
         // for each child change its identifier with entry from map (if such exists)
         Predicate(name, children.map(substitute(_,memory_map)))
@@ -287,7 +287,7 @@ object Resolution {
     val nNF = negationNormalForm(f0)
     val uniqueVarsFormula = makeVariableNamesUnique(nNF)
 
-    skoleHelp(uniqueVarsFormula._1, List(), Map())
+    skoleHelp(uniqueVarsFormula._1, Map())
   }.ensuring(res =>
     res.isNNF && res.containsNoExistential
   )
@@ -452,25 +452,16 @@ object Resolution {
             if (index <= j || index <= i) then false
             else {
               // Map List[Atom] to substituted List[Formula]
-              println("LEFT_pre")
-              println(originalProof(i)._1)
-              println("RIGHT_pre")
-              println(originalProof(j)._1)
+      
 
               val formulas_left_subst = originalProof(i)._1.map(atom => mapPredicateChildrenFromFormula(atom.get, subst))
               val formulas_right_subst =  originalProof(j)._1.map(atom => mapPredicateChildrenFromFormula(atom.get, subst))
               val formulas_clause = stmt._1.map(atom => atom.get)
 
-              println("LEFT")
-              println(formulas_left_subst)
-              println("RIGHT")
-              println(formulas_right_subst)
-
               if (filterLeftRightFormulas(formulas_left_subst, formulas_right_subst, formulas_clause.toSet)) {
-                println("true, ovde")
+
                 checkRPHelp(rest, index+1, originalProof)
               } else {
-                println("Kraj")
                 false
               }
               
@@ -910,7 +901,7 @@ object Resolution {
       step_46
     )
 
-    println("Found the proof: " + checkResolutionProof(assumptions ++ steps))
+    // println("Found the proof: " + checkResolutionProof(assumptions ++ steps))
 
   }
 
