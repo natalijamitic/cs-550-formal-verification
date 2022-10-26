@@ -251,26 +251,26 @@ object Resolution {
     res.isNNF
   )
 
-  def skoleHelp(f: Formula, memory_map: Map[Identifier, Term]): Formula = {
+  def skoleHelp(f: Formula, memory_list: List[Term], memory_map: Map[Identifier, Term]): Formula = {
     f match {
       case Implies(_, _) => f
       case Exists(variable, inner)    => {
         val freeIdents: List[Identifier] = freeVariables(f)
         var freeIdentsList:List[Term] = freeIdents.map(identifier => new Var(identifier))
-        // var new_memory_list = freeIdentsList ++ memory_list
+        var new_memory_list = unique(freeIdentsList ++ memory_list)
 
         // add exists identifier to map with Function of previously collected list
-        val new_memory_map = memory_map ++ Map(variable.name -> Function(variable.name, freeIdentsList))
-        skoleHelp(inner, new_memory_map)
+        val new_memory_map = memory_map ++ Map(variable.name -> Function(variable.name, new_memory_list))
+        skoleHelp(inner, memory_list, new_memory_map)
       }
       case Forall(variable, inner)    => {
         // add the forAll identifier to list
-        // val new_memory_list = memory_list :+ variable
-        Forall(variable, skoleHelp(inner, memory_map))
+        val new_memory_list = memory_list :+ variable
+        Forall(variable, skoleHelp(inner, new_memory_list, memory_map))
       }
-      case Or(l, r)                   => Or(skoleHelp(l, memory_map), skoleHelp(r, memory_map))
-      case And(l, r)                  => And(skoleHelp(l, memory_map), skoleHelp(r, memory_map))
-      case Neg(inner)                 => Neg(skoleHelp(inner, memory_map))
+      case Or(l, r)                   => Or(skoleHelp(l, memory_list, memory_map), skoleHelp(r, memory_list, memory_map))
+      case And(l, r)                  => And(skoleHelp(l, memory_list, memory_map), skoleHelp(r, memory_list, memory_map))
+      case Neg(inner)                 => Neg(skoleHelp(inner,  memory_list, memory_map))
       case Predicate(name, children)  => {
         // for each child change its identifier with entry from map (if such exists)
         Predicate(name, children.map(substitute(_,memory_map)))
@@ -279,7 +279,6 @@ object Resolution {
   }.ensuring(res =>
     res.isNNF && res.containsNoExistential
   )
-
   /*
    * Put the formula in negation normal form and then eliminates existential quantifiers using Skolemization
    */
@@ -287,7 +286,7 @@ object Resolution {
     val nNF = negationNormalForm(f0)
     val uniqueVarsFormula = makeVariableNamesUnique(nNF)
 
-    skoleHelp(uniqueVarsFormula._1, Map())
+    skoleHelp(uniqueVarsFormula._1, List(), Map())
   }.ensuring(res =>
     res.isNNF && res.containsNoExistential
   )
@@ -539,370 +538,33 @@ object Resolution {
       )
     )
 
-    val r5 = conjunctionPrenexSkolemizationNegation(mansionMystery)
+    val prenex = conjunctionPrenexSkolemizationNegation(mansionMystery)
 
-    val step_16 = (
-      List(Atom(hates(a, a))),
-      Deduced((10, 15), Map(Synthetic(6) -> a))
-    )
+  
 
-    val step_17 = (
-      List(
-        Atom(hates(b, a))
-      ),
-      Deduced(
-        (13, 16),
-        Map(Synthetic(9) -> a)
-      )
-    )
 
-    val step_18 = (
-      List(
-        Atom(Neg(hates(c, a)))
-      ),
-      Deduced(
-        (8, 16),
-        Map(Synthetic(4) -> a)
-      )
-    )
 
-    val step_19 = (
-      List(
-        Atom(Neg(killed(c, a)))
-      ),
-      Deduced(
-        (6, 18),
-        Map(Synthetic(2) -> c, Synthetic(3) -> a)
-      )
-    )
-
-    // Assumption
-    val step_20 = (
-      List(
-        Atom(eq(b, b))
-      ),
-      Assumed
-    )
-
-    val step_21 = (
-      List(
-        Atom(Neg(hates(a, b)))
-      ),
-      Deduced(
-        (20, 9),
-        Map(Synthetic(5) -> b)
-      )
-    )
-
-    // Assumption
-    val step_22_leibniz_hates = (
-      List(
-        Atom(Neg(eq(Var(Named("x")), Var(Named("y"))))),
-        Atom(Neg(hates(Var(Named("x")), a))),
-        Atom(hates(Var(Named("y")), a))
-      ),
-      Assumed
-    )
-
-    val step_23 = (
-      List(
-        Atom(Neg(eq(b, c))),
-        Atom(Neg(hates(b, a)))
-      ),
-      Deduced(
-        (22, 18),
-        Map(
-          Named("x") -> b,
-          Named("y") -> c
-        )
-      )
-    )
-
-    val step_24 = (
-      List(
-        Atom(Neg(eq(b, c)))
-      ),
-      Deduced(
-        (23, 17),
-        Map()
-      )
-    )
-
-    // Assumption
-    val step_commutativity_25 = (
-      List(
-        Atom(Neg(eq(Var(Named("x")), Var(Named("y"))))),
-        Atom(eq(Var(Named("y")), Var(Named("x"))))
-      ),
-      Assumed
-    )
-
-    val step_26 = (
-      List(
-        Atom(Neg(eq(c, b)))
-      ),
-      Deduced(
-        (24, 25),
-        Map(Named("x") -> c, Named("y") -> b)
-      )
-    )
-
-    val step_27 = (
-      List(
-        Atom(hates(a, c))
-      ),
-      Deduced(
-        (10, 26),
-        Map(Synthetic(6) -> c)
-      )
-    )
-
-    val step_28 = (
-      List(
-        Atom(hates(b, c))
-      ),
-      Deduced(
-        (13, 27),
-        Map(Synthetic(9) -> c)
-      )
-    )
+    val assumptions: List[(Clause, Justification)] = prenex.map { (_, Assumed) }
     
-
-    val step_30 = (
-      List(
-        Atom(hates(b, Function(Synthetic(11), List(b)))),
-        Atom(eq(Function(Synthetic(11), List(b)), b))
+    val s = List[(Clause, Justification)](
+      (
+        List(Atom(hates(a, a))),
+        Deduced((10, 15), Map(Synthetic(6) -> a))
       ),
-      Deduced(
-        (13, 10),
-        Map(
-          Synthetic(9)-> Function(Synthetic(11), List(b)),
-          Synthetic(6) -> Function(Synthetic(11), List(b))
-        )
+      (
+        List(Atom(hates(b, a))),
+        Deduced((13, 16), Map(Synthetic(9) -> a))
+      ),
+      (
+        List(Atom(Neg(hates(c, a)))),
+        Deduced((8, 16), Map(Synthetic(4) -> a))
+      ),
+      (
+        List(Atom(Neg(killed(c, a)))),
+        Deduced((6, 18), Map(Synthetic(2) -> c, Synthetic(3) -> a))
       )
     )
-    val step_31 = (
-      List(
-        Atom(eq(Function(Synthetic(11), List(b)), b))
-      ),
-      Deduced(
-        (14, 29),
-        Map(
-          Synthetic(10) -> b
-        )
-      )
-    )
-
-    // Assumption
-    val step_32_leibniz_hates = (
-      List(
-        Atom(Neg(eq(Var(Named("x")), Var(Named("y"))))),
-        Atom(hates(b, Var(Named("x")))),
-       Atom( Neg(hates(b, Var(Named("y")))))
-      ),
-      Assumed
-    )
-
-    val step_33 = (
-      List(
-        Atom(Neg(eq(Function(Synthetic(11), List(b)), b))),
-        Atom(Neg(hates(b, b)))
-      ),
-      Deduced(
-        (31, 14),
-        Map(
-          Synthetic(10) -> b,
-          Named("x") -> Function(Synthetic(11), List(b)),
-          Named("y") -> b
-        )
-      )
-    )
-    val step_34 = (
-      List(
-        Atom(Neg(hates(b, b)))
-      ),
-      Deduced(
-        (32, 30),
-        Map()
-      )
-    )
-
-    val step_35 = (
-      List(
-        Atom(richer(b, a))
-      ),
-      Deduced(
-        (12, 33),
-        Map(Synthetic(8) -> b)
-      )
-    )
-
-    val step_36 = (
-      List(
-       Atom( Neg(killed(b, a)))
-      ),
-      Deduced(
-        (7, 34),
-        Map(Synthetic(2) -> b, Synthetic(3) -> a)
-      )
-    )
-
-    // Assumption
-    val step_37_skolem_killer_leibneiz = (
-      List(
-        Atom(Neg(eq(Var(Named("x")), Var(Named("y"))))),
-        Atom(Neg(killed(Var(Named("x")), a))),
-        Atom(killed(Var(Named("y")), a))
-      ),
-      Assumed
-    )
-
-    val step_38 = (
-      List(
-       Atom( Neg(eq(Function(Synthetic(0), List()), b))),
-       Atom( Neg(killed(Function(Synthetic(0), List()), a)))
-      ),
-      Deduced(
-        (35, 36),
-        Map(
-          Named("x") -> Function(Synthetic(0), List()),
-          Named("y") -> b
-        )
-      )
-    )
-
-    val step_39 = (
-      List(
-        Atom(Neg(eq(Function(Synthetic(0), List()), b)))
-      ),
-      Deduced(
-        (37, 1),
-        Map()
-      )
-    )
-
-    val step_40 = (
-      List(
-        Atom(Neg(eq(Function(Synthetic(0), List()), c))),
-        Atom(Neg(killed(Function(Synthetic(0), List()), a)))
-      ),
-      Deduced(
-        (19, 36),
-        Map(
-          Named("x") -> Function(Synthetic(0), List()),
-          Named("y") -> c
-        )
-      )
-    )
-
-    val step_41 = (
-      List(
-       Atom( Neg(eq(Function(Synthetic(0), List()), c)))
-      ),
-      Deduced(
-        (39, 1),
-        Map()
-      )
-    )
-
-    val step_42 = (
-      List(
-       Atom( eq(Function(Synthetic(0), List()), a)),
-       Atom( eq(Function(Synthetic(0), List()), b)),
-       Atom( eq(Function(Synthetic(0), List()), c))
-      ),
-      Deduced(
-        (0, 5),
-        Map(
-          Synthetic(1) -> Function(Synthetic(0), List())
-        )
-      )
-    )
-
-    val step_43 = (
-      List(
-       Atom( eq(Function(Synthetic(0), List()), a)),
-       Atom( eq(Function(Synthetic(0), List()), b))
-      ),
-      Deduced(
-        (41, 40),
-        Map(
-        )
-      )
-    )
-    val step_44 = (
-      List(
-       Atom( eq(Function(Synthetic(0), List()), a))
-      ),
-      Deduced(
-        (42, 38),
-        Map(
-        )
-      )
-    )
-
-
-    val step_45 = (
-      List(
-       Atom( Neg(killed(Function(Synthetic(0), List()), a))),
-       Atom( killed(a, a))
-      ),
-      Deduced(
-        (36, 43),
-        Map(
-          Named("x") -> Function(Synthetic(0), List()),
-          Named("y") -> a
-        )
-      )
-    )
-
-    val step_46 = (
-      List(Atom(killed(a, a))),
-      Deduced(
-        (44, 1),
-        Map()
-      )
-    )
-
-
-    val assumptions: List[(Clause, Justification)] = r5.map { (_, Assumed) }
-    
-    val steps = List[(Clause, Justification)](
-      step_16,
-      step_17,
-      step_18,
-      step_19,
-      step_20,
-      step_21,
-      step_22_leibniz_hates,
-      step_23,
-      step_24,
-      step_commutativity_25,
-      step_26,
-      step_27,
-      step_28,
-
-      step_30,
-      step_31,
-      step_32_leibniz_hates,
-      step_33,
-      step_34,
-      step_35,
-      step_36,
-      step_37_skolem_killer_leibneiz,
-      step_38,
-      step_39,
-      step_40,
-      step_41,
-      step_42,
-      step_43,
-      step_44,
-      step_45,
-      step_46
-    )
-
-    println("Found the proof: " + checkResolutionProof(assumptions ++ steps))
-
+    println("Is the proof correct? : " + checkResolutionProof(assumptions ++ s))
   }
 
   def assumptions(proof: ResolutionProof): List[Clause] = {
