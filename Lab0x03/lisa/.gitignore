@@ -1,0 +1,13 @@
+# IDEs
+.idea
+.metals
+.vscode
+project/metals.sbt
+
+# build-related
+.bsp
+.bloop
+target
+*.scala.semanticdb
+
+*.iml
