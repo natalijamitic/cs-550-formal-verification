@@ -86,8 +86,10 @@ object Lab03 extends lisa.Main{
 
 
     have("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ 'P('x) ∧ (∀'x0. 'P('x0) ⇒ 'x0='x)") by RightAnd(leftBig, rightBig)
-    andThen("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ ∃'y. 'P('y) ∧ (∀'x0. 'P('x0) ⇒ 'x0='y)") by RightExists(y)
-    andThen("∃'y. ∀'x0. ('P('x0) ⇔ 'x0='y) ⊢ ∃'y. 'P('y) ∧ (∀ 'x0. 'P('x0) ⇒ 'x0='y)") by LeftExists
+    andThen("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ ∃'x. 'P('x) ∧ (∀'x0. 'P('x0) ⇒ 'x0='x)") by RightExists(x)
+    andThen("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ ∃'y. 'P('y) ∧ (∀'x0. 'P('x0) ⇒ 'x0='y)") by Restate
+    andThen("∃'x. ∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ ∃'y. 'P('y) ∧ (∀ 'x0. 'P('x0) ⇒ 'x0='y)") by LeftExists
+    andThen("∃'y. ∀'x0. ('P('x0) ⇔ 'x0='y) ⊢ ∃'y. 'P('y) ∧ (∀ 'x0. 'P('x0) ⇒ 'x0='y)") by Restate
     andThen("∃'y. ∀'x. ('P('x) ⇔ 'x='y) ⊢ ∃'y. 'P('y) ∧ (∀ 'x. 'P('x) ⇒ 'x='y)") by Restate
     showCurrentProof()
   }
@@ -102,17 +104,17 @@ object Lab03 extends lisa.Main{
 
 
   // //This one is given as an example
-  THEOREM("Subset_Reflexivity") of " ⊢ subset_of('x, 'x)" PROOF {
-    val subs = have(subsetAxiom) //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆ 'y
-                 //shows the current sequent calculus proof
-    val r1 = andThen(() |- forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)) by InstantiateForall(x, x)    //InstantiateForall will instantiate a universally bound formula on the right of a sequent with the given terms.
+  // THEOREM("Subset_Reflexivity") of " ⊢ subset_of('x, 'x)" PROOF {
+  //   val subs = have(subsetAxiom) //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆ 'y
+  //                //shows the current sequent calculus proof
+  //   val r1 = andThen(() |- forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)) by InstantiateForall(x, x)    //InstantiateForall will instantiate a universally bound formula on the right of a sequent with the given terms.
    
-    have(() |- in(z, x) ==> in(z, x)) by Restate                                                           //Restate solves automatically a class of easy proposition, including reflexivity of equality, alpha-equivalence of formulas, and some propositional logic properties
-    andThen(() |- forall(z, in(z, x) ==> in(z, x))) by RightForall
-    andThen(applySubst(forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)))                                  //applySubst will replace  occurences of the left-hand-side of the equivalence given in argument by the right-hand-side in the current sequent.
-    Discharge(r1)  
-    showCurrentProof()                                                                                         //Discharge removes the formula proven on the right of sequent r1 from the left-hand-side of the current sequent
-  }
+  //   have(() |- in(z, x) ==> in(z, x)) by Restate                                                           //Restate solves automatically a class of easy proposition, including reflexivity of equality, alpha-equivalence of formulas, and some propositional logic properties
+  //   andThen(() |- forall(z, in(z, x) ==> in(z, x))) by RightForall
+  //   andThen(applySubst(forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)))                                  //applySubst will replace  occurences of the left-hand-side of the equivalence given in argument by the right-hand-side in the current sequent.
+  //   Discharge(r1)  
+  //   showCurrentProof()                                                                                         //Discharge removes the formula proven on the right of sequent r1 from the left-hand-side of the current sequent
+  // }
 
   // THEOREM("Subset_Transitivity") of "subset_of('x, 'y); subset_of('y, 'z) ⊢ subset_of('x, 'z)" PROOF {
   //   val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆  'y
