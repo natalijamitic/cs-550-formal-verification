@@ -176,8 +176,8 @@ object Lab03 extends lisa.Main{
   }
 
   // THEOREM("Subset_Antisymmetry") of "subset_of('x, 'y); subset_of('y, 'x)  ⊢ 'x='y " PROOF {
-  //   val ext = have(extensionalityAxiom)    //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆ 'y
-  //   val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. 'x ⊆ 'y ⇔ (∀'z. 'z ∊ 'x ⇒ 'z ∊ 'y)
+  //   val ext = have(extensionalityAxiom)    //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x === 'y  forall(x, forall(y, forall(z, in(z, x) <=> in(z, y)) <=> (x === y)))
+  //   val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. 'x ⊆ 'y ⇔ (∀'z. 'z ∊ 'x ⇒ 'z ∊ 'y)    forall(x, forall(y, subset(x, y) <=> forall(z, in(z, x) ==> in(z, y))))
   //   //TODO
   // }
 
