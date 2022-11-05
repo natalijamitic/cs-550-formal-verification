@@ -9,6 +9,8 @@ object Lab03 extends lisa.Main{
   private val x0 = VariableLabel("x0")
 
   private val y = VariableLabel("y")
+  private val a = VariableLabel("a")
+  private val r = VariableLabel("r")
   private val z = VariableLabel("z")
   private val Q = SchematicPredicateLabel("P", 1)
   private val H = SchematicPredicateLabel("R", 2)
@@ -103,23 +105,75 @@ object Lab03 extends lisa.Main{
   // ////////////////
 
 
-  // //This one is given as an example
-  // THEOREM("Subset_Reflexivity") of " ⊢ subset_of('x, 'x)" PROOF {
-  //   val subs = have(subsetAxiom) //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆ 'y
-  //                //shows the current sequent calculus proof
-  //   val r1 = andThen(() |- forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)) by InstantiateForall(x, x)    //InstantiateForall will instantiate a universally bound formula on the right of a sequent with the given terms.
+  //This one is given as an example
+  THEOREM("Subset_Reflexivity") of " ⊢ subset_of('x, 'x)" PROOF {
+    val subs = have(subsetAxiom) //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆ 'y
+                 //shows the current sequent calculus proof
+    val r1 = andThen(() |- forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)) by InstantiateForall(x, x)    //InstantiateForall will instantiate a universally bound formula on the right of a sequent with the given terms.
    
-  //   have(() |- in(z, x) ==> in(z, x)) by Restate                                                           //Restate solves automatically a class of easy proposition, including reflexivity of equality, alpha-equivalence of formulas, and some propositional logic properties
-  //   andThen(() |- forall(z, in(z, x) ==> in(z, x))) by RightForall
-  //   andThen(applySubst(forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)))                                  //applySubst will replace  occurences of the left-hand-side of the equivalence given in argument by the right-hand-side in the current sequent.
-  //   Discharge(r1)  
-  //   showCurrentProof()                                                                                         //Discharge removes the formula proven on the right of sequent r1 from the left-hand-side of the current sequent
-  // }
+    have(() |- in(z, x) ==> in(z, x)) by Restate                                                           //Restate solves automatically a class of easy proposition, including reflexivity of equality, alpha-equivalence of formulas, and some propositional logic properties
+    andThen(() |- forall(z, in(z, x) ==> in(z, x))) by RightForall
+    andThen(applySubst(forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)))                                  //applySubst will replace  occurences of the left-hand-side of the equivalence given in argument by the right-hand-side in the current sequent.
+    Discharge(r1)  
+    showCurrentProof()                                                                                         //Discharge removes the formula proven on the right of sequent r1 from the left-hand-side of the current sequent
+  }
 
-  // THEOREM("Subset_Transitivity") of "subset_of('x, 'y); subset_of('y, 'z) ⊢ subset_of('x, 'z)" PROOF {
-  //   val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆  'y
-  //   //TODO
-  // }
+  THEOREM("Subset_Transitivity") of "subset_of('x, 'y); subset_of('y, 'z) ⊢ subset_of('x, 'z)" PROOF {
+    val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆  'y
+
+    val hy = have(in(r, y) |- in(r, y)) by Hypothesis
+    val hx = have(in(r, x) |- in(r, x)) by Hypothesis
+    val hz = have(in(r, z) |- in(r, z)) by Hypothesis
+
+    /* probamo discharge*/
+    have(subsetAxiom)
+    andThen(() |- forall(x, forall(y, subset(x, y) <=> forall(r, in(r, x) ==> in(r, y))))) by Restate
+    val r1 = andThen(() |- forall(r, in(r, x) ==> in(r, y)) <=> subset(x, y)) by InstantiateForall(x, y)   
+
+    have(subsetAxiom)
+    andThen(() |- forall(x, forall(z, subset(x, z) <=> forall(r, in(r, x) ==> in(r, z))))) by Restate
+    val r2 = andThen(() |- forall(r, in(r, x) ==> in(r, z)) <=> subset(x, z)) by InstantiateForall(x, z) 
+
+    have(subsetAxiom)
+    andThen(() |- forall(y, forall(z, subset(y, z) <=> forall(r, in(r, y) ==> in(r, z))))) by Restate
+    val r3 = andThen(() |- forall(r, in(r, y) ==> in(r, z)) <=> subset(y, z)) by InstantiateForall(y, z) 
+    /**/  
+
+    have((in(r, x) ==> in(r, y), in(r,x)) |- in(r, y)) by LeftImplies(hx, hy)
+    var implies = andThen((forall(r, in(r, x) ==> in(r, y)), in(r,x)) |- in(r, y)) by LeftForall(r)
+    andThen((in(r,x)) |- (in(r, y), !(forall(r, in(r, x) ==> in(r, y))))) by RightNot
+    andThen(() |- (in(r, y), !(forall(r, in(r, x) ==> in(r, y))), !(in(r,x)))) by RightNot
+    implies = andThen(applySubst(forall(r, in(r, x) ==> in(r, y)) <=> subset(x, y)))
+    Discharge(r1)
+    implies = andThen((subset(x,y)) |- ( in(r,y), !(in(r,x)) )) by LeftNot 
+    implies = andThen((subset(x,y), in(r,x)) |- in(r,y)) by LeftNot 
+  
+
+    val implies2 = have((subset(x, y), in(r,x), in(r, y) ==> in(r, z)) |- in(r, z)) by LeftImplies(implies, hz)
+    andThen((subset(x, y), in(r,x), forall(r, in(r, y) ==> in(r, z))) |- in(r, z)) by LeftForall(r)
+    andThen((in(r,x), forall(r, in(r, y) ==> in(r, z))) |- (in(r, z), !subset(x, y))) by RightNot
+    andThen((forall(r, in(r, y) ==> in(r, z))) |- (in(r, z), !subset(x, y), !(in(r,x)))) by RightNot
+    andThen(() |- (in(r, z), !subset(x, y), !(in(r,x)), !forall(r, in(r, y) ==> in(r, z)))) by RightNot
+    andThen(applySubst(forall(r, in(r, y) ==> in(r, z)) <=> subset(y, z)))
+    Discharge(r3)
+    andThen((subset(y, z)) |- (in(r, z), !subset(x, y), !(in(r,x)))) by LeftNot
+    andThen((subset(y, z), (in(r,x))) |- (in(r, z), !subset(x, y))) by LeftNot
+    andThen((subset(y, z), (in(r,x)), subset(x, y)) |- (in(r, z))) by LeftNot
+
+
+    val staro = andThen((subset(x, y), subset(y, z)) |- in(r,x) ==> in(r, z)) by RightImplies
+    val tmp = andThen((subset(x, y), subset(y, z)) |- forall(r, in(r,x) ==> in(r, z))) by RightForall
+    andThen((subset(x, y)) |- (forall(r, in(r,x) ==> in(r, z)) , !subset(y, z) )) by RightNot
+    andThen(() |- (forall(r, in(r,x) ==> in(r, z)) , !subset(y, z), !subset(x, y) )) by RightNot
+    andThen(applySubst(forall(r, in(r, x) ==> in(r, z)) <=> subset(x, z)))
+    Discharge(r2)
+    andThen((subset(x, y)) |- (subset(x,z) , !subset(y, z) )) by LeftNot
+    andThen((subset(y, z), subset(x, y)) |- (subset(x,z))) by LeftNot
+
+
+    showCurrentProof()  
+
+  }
 
   // THEOREM("Subset_Antisymmetry") of "subset_of('x, 'y); subset_of('y, 'x)  ⊢ 'x='y " PROOF {
   //   val ext = have(extensionalityAxiom)    //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆ 'y
