@@ -175,11 +175,50 @@ object Lab03 extends lisa.Main{
 
   }
 
-  // THEOREM("Subset_Antisymmetry") of "subset_of('x, 'y); subset_of('y, 'x)  ⊢ 'x='y " PROOF {
-  //   val ext = have(extensionalityAxiom)    //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x === 'y  forall(x, forall(y, forall(z, in(z, x) <=> in(z, y)) <=> (x === y)))
-  //   val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. 'x ⊆ 'y ⇔ (∀'z. 'z ∊ 'x ⇒ 'z ∊ 'y)    forall(x, forall(y, subset(x, y) <=> forall(z, in(z, x) ==> in(z, y))))
-  //   //TODO
-  // }
+  THEOREM("Subset_Antisymmetry") of "subset_of('x, 'y); subset_of('y, 'x)  ⊢ 'x='y " PROOF {
+    val ext = have(extensionalityAxiom)    //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x === 'y  forall(x, forall(y, forall(z, in(z, x) <=> in(z, y)) <=> (x === y)))
+    val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. 'x ⊆ 'y ⇔ (∀'z. 'z ∊ 'x ⇒ 'z ∊ 'y)    forall(x, forall(y, subset(x, y) <=> forall(z, in(z, x) ==> in(z, y))))
+
+    /* probamo discharge*/
+    have(subsetAxiom)
+    andThen(() |- forall(x, forall(y, subset(x, y) <=> forall(r, in(r, x) ==> in(r, y))))) by Restate
+    val rXY = andThen(() |- forall(r, in(r, x) ==> in(r, y)) <=> subset(x, y)) by InstantiateForall(x, y)   
+
+    have(subsetAxiom)
+    andThen(() |- forall(y, forall(x, subset(y, x) <=> forall(r, in(r, y) ==> in(r, x))))) by Restate
+    val rYX = andThen(() |- forall(r, in(r, y) ==> in(r, x)) <=> subset(y, x)) by InstantiateForall(y, x)
+
+    have(extensionalityAxiom)
+    andThen(()|- forall(x, forall(y, forall(r, in(r, x) <=> in(r, y)) <=> (x === y)))) by Restate
+    val rXeqY = andThen(() |- forall(r, in(r, x) <=> in(r, y)) <=> (x === y)) by InstantiateForall(x, y) 
+    /**/  
+
+    val hyp1 = have((in(r, y) ==> in(r,x)) |- (in(r, y) ==> in(r,x))) by Hypothesis
+    var left = andThen(forall(r, in(r, y) ==> in(r,x)) |- (in(r, y) ==> in(r,x))) by LeftForall(r)
+    andThen(() |- (in(r, y) ==> in(r,x), !forall(r, in(r, y) ==> in(r,x))) ) by RightNot
+    andThen(applySubst(forall(r, in(r, y) ==> in(r,x)) <=> subset(y, x)))
+    Discharge(rYX)
+    left = andThen(subset(y, x) |- (in(r, y) ==> in(r,x))) by LeftNot
+
+    val hyp2 = have((in(r, x) ==> in(r,y)) |- (in(r, x) ==> in(r,y))) by Hypothesis
+    var right = andThen(forall(r, in(r, x) ==> in(r,y)) |- (in(r, x) ==> in(r,y))) by LeftForall(r)
+    andThen(() |- (in(r, x) ==> in(r,y), !forall(r, in(r, x) ==> in(r,y))) ) by RightNot
+    andThen(applySubst(forall(r, in(r, x) ==> in(r,y)) <=> subset(x, y)))
+    Discharge(rXY)
+    right = andThen(subset(x, y) |- (in(r, x) ==> in(r,y))) by LeftNot
+
+    have((subset(y,x), subset(x, y)) |- iff(in(r, x), in(r,y))) by RightIff(left, right)
+    andThen((subset(y,x), subset(x, y)) |- forall(r, iff(in(r, x), in(r,y)))) by RightForall
+
+    andThen((subset(y,x)) |- (forall(r, iff(in(r, x), in(r,y))), !subset(x, y))) by RightNot
+    andThen(() |- (forall(r, iff(in(r, x), in(r,y))), !subset(x, y), !subset(y,x))) by RightNot
+    andThen(applySubst(forall(r, iff(in(r, x), in(r,y))) <=> (x === y)))
+    Discharge(rXeqY)    
+    andThen((subset(x, y)) |- ((x === y), !subset(y, x))) by LeftNot
+    andThen((subset(x, y), subset(y, x)) |- (x === y)) by LeftNot
+
+    showCurrentProof() 
+  }
 
 
 }
