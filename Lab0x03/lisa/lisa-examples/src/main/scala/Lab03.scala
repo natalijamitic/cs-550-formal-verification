@@ -9,7 +9,6 @@ object Lab03 extends lisa.Main{
   private val x0 = VariableLabel("x0")
 
   private val y = VariableLabel("y")
-  private val a = VariableLabel("a")
   private val r = VariableLabel("r")
   private val z = VariableLabel("z")
   private val Q = SchematicPredicateLabel("P", 1)
@@ -42,7 +41,6 @@ object Lab03 extends lisa.Main{
   //Details about Sequent Calculus in LISA can be found here: https://github.com/epfl-lara/lisa/blob/main/Reference%20Manual/lisa.pdf
 
   THEOREM("Ex_All_implies_All_Ex") of "∃'x. ∀'y. 'R('x, 'y) ⊢ ∀'y. ∃'x. 'R('x, 'y)" PROOF {
-    //TODO
     have("'R('x0, 'y) ⊢ 'R('x0, 'y)") by Hypothesis
     andThen ("∀'y. 'R('x0, 'y) |- 'R('x0, 'y)") by LeftForall(y)
     andThen ("∀'y. 'R('x0, 'y) |- ∃'x0.'R('x0, 'y)") by RightExists(x0)
@@ -50,12 +48,10 @@ object Lab03 extends lisa.Main{
     andThen ("∃'x. ∀'y. 'R('x, 'y) |- ∃'x. 'R('x, 'y)") by Restate
     andThen ("∃'x. ∀'y. 'R('x, 'y) |- ∀'y. ∃'x.'R('x, 'y)") by RightForall
     showCurrentProof()
-
   }
   show
 
   THEOREM("Unique_Exist_Variant") of "∃'y. ∀'x. ('P('x) ⇔ 'x='y) ⊢ ∃'y. 'P('y) ∧ (∀'x. 'P('x) ⇒ 'x='y)" PROOF {
-    
     have("⊢'x='x") by RightRefl
     val left1 = andThen("⊢'x='x ; 'P('x) ; 'P('x)") by Weakening
     have("'P('x) ⊢ 'P('x)") by Hypothesis
@@ -73,8 +69,6 @@ object Lab03 extends lisa.Main{
     andThen("'P('x) ⇔ 'x='x ⊢'P('x)") by Restate
     val leftBig = andThen ("∀'x0. 'P('x0) ⇔ 'x0='x ⊢'P('x)") by LeftForall(x)
 
-
-
     have("'P('x0) ⊢ 'P('x0)") by Hypothesis
     val left4 = andThen("'P('x0) ; ('x0='x ⇒ 'P('x0)) ⊢ 'P('x0) ; 'x0='x ") by Weakening
     have("'x0='x ⊢ 'x0='x") by Hypothesis
@@ -85,7 +79,6 @@ object Lab03 extends lisa.Main{
     andThen("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ 'P('x0) ⇒ 'x0='x") by LeftForall(x0)
     andThen("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢∀ 'x0. 'P('x0) ⇒ 'x0='x") by RightForall
     val rightBig = andThen("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢∀ 'x0. 'P('x0) ⇒ 'x0='x") by Restate
-
 
     have("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ 'P('x) ∧ (∀'x0. 'P('x0) ⇒ 'x0='x)") by RightAnd(leftBig, rightBig)
     andThen("∀'x0. ('P('x0) ⇔ 'x0='x) ⊢ ∃'x. 'P('x) ∧ (∀'x0. 'P('x0) ⇒ 'x0='x)") by RightExists(x)
@@ -108,14 +101,12 @@ object Lab03 extends lisa.Main{
   //This one is given as an example
   THEOREM("Subset_Reflexivity") of " ⊢ subset_of('x, 'x)" PROOF {
     val subs = have(subsetAxiom) //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x ⊆ 'y
-                 //shows the current sequent calculus proof
-    val r1 = andThen(() |- forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)) by InstantiateForall(x, x)    //InstantiateForall will instantiate a universally bound formula on the right of a sequent with the given terms.
-   
+    val r1 = andThen(() |- forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)) by InstantiateForall(x, x)   //InstantiateForall will instantiate a universally bound formula on the right of a sequent with the given terms.
     have(() |- in(z, x) ==> in(z, x)) by Restate                                                           //Restate solves automatically a class of easy proposition, including reflexivity of equality, alpha-equivalence of formulas, and some propositional logic properties
     andThen(() |- forall(z, in(z, x) ==> in(z, x))) by RightForall
-    andThen(applySubst(forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)))                                  //applySubst will replace  occurences of the left-hand-side of the equivalence given in argument by the right-hand-side in the current sequent.
-    Discharge(r1)  
-    showCurrentProof()                                                                                         //Discharge removes the formula proven on the right of sequent r1 from the left-hand-side of the current sequent
+    andThen(applySubst(forall(z, in(z, x) ==> in(z, x)) <=> subset(x, x)))                                 //applySubst will replace  occurences of the left-hand-side of the equivalence given in argument by the right-hand-side in the current sequent.
+    Discharge(r1)                                                                                          //Discharge removes the formula proven on the right of sequent r1 from the left-hand-side of the current sequent
+    showCurrentProof()                                                                                        
   }
 
   THEOREM("Subset_Transitivity") of "subset_of('x, 'y); subset_of('y, 'z) ⊢ subset_of('x, 'z)" PROOF {
@@ -125,7 +116,7 @@ object Lab03 extends lisa.Main{
     val hx = have(in(r, x) |- in(r, x)) by Hypothesis
     val hz = have(in(r, z) |- in(r, z)) by Hypothesis
 
-    /* probamo discharge*/
+    /*discharge*/
     have(subsetAxiom)
     andThen(() |- forall(x, forall(y, subset(x, y) <=> forall(r, in(r, x) ==> in(r, y))))) by Restate
     val r1 = andThen(() |- forall(r, in(r, x) ==> in(r, y)) <=> subset(x, y)) by InstantiateForall(x, y)   
@@ -141,34 +132,35 @@ object Lab03 extends lisa.Main{
 
     have((in(r, x) ==> in(r, y), in(r,x)) |- in(r, y)) by LeftImplies(hx, hy)
     var implies = andThen((forall(r, in(r, x) ==> in(r, y)), in(r,x)) |- in(r, y)) by LeftForall(r)
-    andThen((in(r,x)) |- (in(r, y), !(forall(r, in(r, x) ==> in(r, y))))) by RightNot
-    andThen(() |- (in(r, y), !(forall(r, in(r, x) ==> in(r, y))), !(in(r,x)))) by RightNot
+    // andThen((in(r,x)) |- (in(r, y), !(forall(r, in(r, x) ==> in(r, y))))) by RightNot
+    // andThen(() |- (in(r, y), !(forall(r, in(r, x) ==> in(r, y))), !(in(r,x)))) by RightNot
     implies = andThen(applySubst(forall(r, in(r, x) ==> in(r, y)) <=> subset(x, y)))
     Discharge(r1)
-    implies = andThen((subset(x,y)) |- ( in(r,y), !(in(r,x)) )) by LeftNot 
-    implies = andThen((subset(x,y), in(r,x)) |- in(r,y)) by LeftNot 
+    // implies = andThen((subset(x,y)) |- ( in(r,y), !(in(r,x)) )) by LeftNot 
+    // implies = andThen((subset(x,y), in(r,x)) |- in(r,y)) by LeftNot 
+    implies = andThen((subset(x,y), in(r,x)) |- in(r,y)) by Restate
   
 
     val implies2 = have((subset(x, y), in(r,x), in(r, y) ==> in(r, z)) |- in(r, z)) by LeftImplies(implies, hz)
     andThen((subset(x, y), in(r,x), forall(r, in(r, y) ==> in(r, z))) |- in(r, z)) by LeftForall(r)
-    andThen((in(r,x), forall(r, in(r, y) ==> in(r, z))) |- (in(r, z), !subset(x, y))) by RightNot
-    andThen((forall(r, in(r, y) ==> in(r, z))) |- (in(r, z), !subset(x, y), !(in(r,x)))) by RightNot
-    andThen(() |- (in(r, z), !subset(x, y), !(in(r,x)), !forall(r, in(r, y) ==> in(r, z)))) by RightNot
+    // andThen((in(r,x), forall(r, in(r, y) ==> in(r, z))) |- (in(r, z), !subset(x, y))) by RightNot
+    // andThen((forall(r, in(r, y) ==> in(r, z))) |- (in(r, z), !subset(x, y), !(in(r,x)))) by RightNot
+    // andThen(() |- (in(r, z), !subset(x, y), !(in(r,x)), !forall(r, in(r, y) ==> in(r, z)))) by RightNot
     andThen(applySubst(forall(r, in(r, y) ==> in(r, z)) <=> subset(y, z)))
     Discharge(r3)
-    andThen((subset(y, z)) |- (in(r, z), !subset(x, y), !(in(r,x)))) by LeftNot
-    andThen((subset(y, z), (in(r,x))) |- (in(r, z), !subset(x, y))) by LeftNot
-    andThen((subset(y, z), (in(r,x)), subset(x, y)) |- (in(r, z))) by LeftNot
-
+    // andThen((subset(y, z)) |- (in(r, z), !subset(x, y), !(in(r,x)))) by LeftNot
+    // andThen((subset(y, z), (in(r,x))) |- (in(r, z), !subset(x, y))) by LeftNot
+    // andThen((subset(y, z), (in(r,x)), subset(x, y)) |- (in(r, z))) by LeftNot
+    andThen((subset(y, z), (in(r,x)), subset(x, y)) |- (in(r, z))) by Restate
 
     val staro = andThen((subset(x, y), subset(y, z)) |- in(r,x) ==> in(r, z)) by RightImplies
     val tmp = andThen((subset(x, y), subset(y, z)) |- forall(r, in(r,x) ==> in(r, z))) by RightForall
-    andThen((subset(x, y)) |- (forall(r, in(r,x) ==> in(r, z)) , !subset(y, z) )) by RightNot
-    andThen(() |- (forall(r, in(r,x) ==> in(r, z)) , !subset(y, z), !subset(x, y) )) by RightNot
+    // andThen((subset(x, y)) |- (forall(r, in(r,x) ==> in(r, z)) , !subset(y, z) )) by RightNot
+    // andThen(() |- (forall(r, in(r,x) ==> in(r, z)) , !subset(y, z), !subset(x, y) )) by RightNot
     andThen(applySubst(forall(r, in(r, x) ==> in(r, z)) <=> subset(x, z)))
     Discharge(r2)
-    andThen((subset(x, y)) |- (subset(x,z) , !subset(y, z) )) by LeftNot
-    andThen((subset(y, z), subset(x, y)) |- (subset(x,z))) by LeftNot
+    // andThen((subset(x, y)) |- (subset(x,z) , !subset(y, z) )) by LeftNot
+    // andThen((subset(y, z), subset(x, y)) |- (subset(x,z))) by LeftNot
 
 
     showCurrentProof()  
@@ -179,7 +171,7 @@ object Lab03 extends lisa.Main{
     val ext = have(extensionalityAxiom)    //  ⊢ ∀'x. ∀'y. (∀'z. 'z ∊ 'x ⇔ 'z ∊ 'y) ⇔ 'x === 'y  forall(x, forall(y, forall(z, in(z, x) <=> in(z, y)) <=> (x === y)))
     val subs = have(subsetAxiom)           //  ⊢ ∀'x. ∀'y. 'x ⊆ 'y ⇔ (∀'z. 'z ∊ 'x ⇒ 'z ∊ 'y)    forall(x, forall(y, subset(x, y) <=> forall(z, in(z, x) ==> in(z, y))))
 
-    /* probamo discharge*/
+    /*discharge*/
     have(subsetAxiom)
     andThen(() |- forall(x, forall(y, subset(x, y) <=> forall(r, in(r, x) ==> in(r, y))))) by Restate
     val rXY = andThen(() |- forall(r, in(r, x) ==> in(r, y)) <=> subset(x, y)) by InstantiateForall(x, y)   
@@ -195,27 +187,29 @@ object Lab03 extends lisa.Main{
 
     val hyp1 = have((in(r, y) ==> in(r,x)) |- (in(r, y) ==> in(r,x))) by Hypothesis
     var left = andThen(forall(r, in(r, y) ==> in(r,x)) |- (in(r, y) ==> in(r,x))) by LeftForall(r)
-    andThen(() |- (in(r, y) ==> in(r,x), !forall(r, in(r, y) ==> in(r,x))) ) by RightNot
+    // andThen(() |- (in(r, y) ==> in(r,x), !forall(r, in(r, y) ==> in(r,x))) ) by RightNot
     andThen(applySubst(forall(r, in(r, y) ==> in(r,x)) <=> subset(y, x)))
     Discharge(rYX)
-    left = andThen(subset(y, x) |- (in(r, y) ==> in(r,x))) by LeftNot
+    // left = andThen(subset(y, x) |- (in(r, y) ==> in(r,x))) by LeftNot
+    left = andThen(subset(y, x) |- (in(r, y) ==> in(r,x))) by Restate
 
     val hyp2 = have((in(r, x) ==> in(r,y)) |- (in(r, x) ==> in(r,y))) by Hypothesis
     var right = andThen(forall(r, in(r, x) ==> in(r,y)) |- (in(r, x) ==> in(r,y))) by LeftForall(r)
-    andThen(() |- (in(r, x) ==> in(r,y), !forall(r, in(r, x) ==> in(r,y))) ) by RightNot
+    // andThen(() |- (in(r, x) ==> in(r,y), !forall(r, in(r, x) ==> in(r,y))) ) by RightNot
     andThen(applySubst(forall(r, in(r, x) ==> in(r,y)) <=> subset(x, y)))
     Discharge(rXY)
-    right = andThen(subset(x, y) |- (in(r, x) ==> in(r,y))) by LeftNot
+    // right = andThen(subset(x, y) |- (in(r, x) ==> in(r,y))) by LeftNot
+    right = andThen(subset(x, y) |- (in(r, x) ==> in(r,y))) by Restate
 
     have((subset(y,x), subset(x, y)) |- iff(in(r, x), in(r,y))) by RightIff(left, right)
     andThen((subset(y,x), subset(x, y)) |- forall(r, iff(in(r, x), in(r,y)))) by RightForall
 
-    andThen((subset(y,x)) |- (forall(r, iff(in(r, x), in(r,y))), !subset(x, y))) by RightNot
-    andThen(() |- (forall(r, iff(in(r, x), in(r,y))), !subset(x, y), !subset(y,x))) by RightNot
+    // andThen((subset(y,x)) |- (forall(r, iff(in(r, x), in(r,y))), !subset(x, y))) by RightNot
+    // andThen(() |- (forall(r, iff(in(r, x), in(r,y))), !subset(x, y), !subset(y,x))) by RightNot
     andThen(applySubst(forall(r, iff(in(r, x), in(r,y))) <=> (x === y)))
     Discharge(rXeqY)    
-    andThen((subset(x, y)) |- ((x === y), !subset(y, x))) by LeftNot
-    andThen((subset(x, y), subset(y, x)) |- (x === y)) by LeftNot
+    // andThen((subset(x, y)) |- ((x === y), !subset(y, x))) by LeftNot
+    // andThen((subset(x, y), subset(y, x)) |- (x === y)) by LeftNot
 
     showCurrentProof() 
   }
