@@ -75,7 +75,7 @@ object AVL {
 
         def getNewHeight(l:Tree, r:Tree):BigInt = {
             stainless.math.max(l.height, r.height) + 1
-        }
+        }.ensuring(res => res > -1)
 
         def height: BigInt = (
             this match {
@@ -84,7 +84,7 @@ object AVL {
                    stainless.math.max(l.height , r.height) + 1
                 }
             }
-        )
+        ).ensuring(res => res > -2)
 
         // Define AVL properties
         def isBalanced: Boolean = {
@@ -163,7 +163,7 @@ object AVL {
                 Node(n, l, r, getNewHeight(l,r))
             }
         } 
-        . ensuring (res => res.isAVL)
+        . ensuring (res => res.isAVL  &&   (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)))
 
         def balanceRight(n: BigInt, l:Tree, r:Tree):Tree = {
             require( 
@@ -215,7 +215,8 @@ object AVL {
                 Node(n, l, r, getNewHeight(l,r))
             }
         }
-        .ensuring(res=> res.isAVL)
+        .ensuring(res=> res.isAVL && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)))
+
 
         def insertAVL(new_key: BigInt):Tree = {
             require(isAVL)
@@ -260,7 +261,77 @@ object AVL {
             }
 
         }. ensuring(res=> res.isAVL && stainless.math.abs(res.height - old(this).height) <=1)
+
+        def delete_max(): (BigInt, Tree) = {
+            require(this.size > 0 && isAVL)
+            this match {
+                case Node(n, l, r, h) if r.size == 0 => {
+                    check(r.height == -1)
+                    check(stainless.math.abs(r.height - l.height)<=1)
+                    check(l.height == -1 || l.height == 0)
+                    check(l.height == this.height -1)
+                    (n,l)
+                }
+                case Node(n, l, r ,h) => {
+                    val (n_prim, r_prim) = r.delete_max()
+                    check(r.getKeySet.contains(n_prim))
+                    check(l.checkGreatest(n) && r_prim.checkSmallest(n))
+                    check(r_prim.checkGreatest(n_prim))
+                    check(n_prim > n)
+                    check(l.isAVL && r_prim.isAVL)
+                    // check(r_prim.height == r.height - 1)
+                    check((stainless.math.abs(l.height - r_prim.height) <=1) || ( l.height == r_prim.height+2))
+                    (n_prim, balanceLeft(n, l, r_prim))
+                }
+            }
+        }.ensuring(res => res._2.isAVL && (res._2.height == old(this).height || res._2.height == old(this).height - 1) && res._2.checkGreatest(res._1) && this.getKeySet.contains(res._1) && res._2.getKeySet.subsetOf(old(this).getKeySet))
+
+        def delete_root(): Tree = { 
+            require(size > 0 && isAVL)
+            this match {
+                case Node(n, l, r ,h ) if r.size == 0 => l
+                case Node(n, l, r ,h ) if l.size == 0 => r
+                case Node(n, l, r ,h ) => {
+                    val (n_prim, l_prim) = l.delete_max()
+                    check(l_prim.checkGreatest(n_prim))
+                    check(r.checkSmallest(n_prim))
+                    check(l_prim.isAVL && r.isAVL)
+                    // check(r_prim.height == r.height - 1)
+                    check((stainless.math.abs(l_prim.height - r.height) <=1) || ( l_prim.height +2 == r.height))
+                    balanceRight(n_prim, l_prim, r)
+                }
+            }
+        }.ensuring (res=> res.isAVL && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
+
+
+        def deleteAVL(key: BigInt): Tree = {
+            require(isAVL)
+            this match {
+                case Empty() => Empty()
+                case Node(n, l, r, h) => {
+                    if (key == n) {
+                        delete_root()
+                    } else if (key < n) {
+                        val l_prim = l.deleteAVL(key)
+                        check(l_prim.checkGreatest(n)) // skontaj da je l_prim subset l
+                        check(r.checkSmallest(n))
+                        check(l_prim.isAVL && r.isAVL)
+                        // check(r_prim.height == r.height - 1)
+                        check((stainless.math.abs(l_prim.height - r.height) <=1) || ( l_prim.height +2 == r.height))
+                        balanceRight(n, l_prim, r)
+                    } else {
+                        val r_prim = r.deleteAVL(key)
+                        check(l.checkGreatest(n) && r_prim.checkSmallest(n)) // skontaj da je r_prim subset r
+                        check(l.isAVL && r_prim.isAVL)
+                        check((stainless.math.abs(l.height - r_prim.height) <=1) || ( l.height == r_prim.height+2))
+                   
+                        balanceLeft(n, l, r_prim)
+                    }
+                }
+            }
+        }.ensuring(res=> res.isAVL && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
     }
+
         
     case class Node(key: BigInt, left: Tree, right: Tree, hgt: BigInt) extends Tree
     case class Empty() extends Tree
