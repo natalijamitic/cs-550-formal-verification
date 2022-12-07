@@ -57,6 +57,21 @@ object AVL {
             }
         } ensuring(res => res == this.getKeyList.contains(searched))
 
+        def lookupAVL(searched: BigInt): Boolean = {
+            require(isAVL)
+            this match {
+                case Empty() => false
+                case Node(value, left, right, _) =>
+                if (searched == value) {
+                    true
+                } else if(searched < value) {
+                    left.lookup(searched)
+                } else {
+                    right.lookup(searched)
+                }
+            }
+        } ensuring(res => res == this.getKeyList.contains(searched))
+
         def insertBST(value: BigInt): Tree = {
             require(isBST)
             this match {
