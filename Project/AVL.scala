@@ -1,4 +1,4 @@
-// ../../stainless/stainless.sh Resolution.scala --watch --config-file=stainless.conf
+// ../../stainless/stainless.sh AVL.scala --watch --timeout=10
 //> using jar "stainless-library_2.13-0.9.6.jar"
 
 import stainless.annotation._
@@ -163,7 +163,7 @@ object AVL {
                 Node(n, l, r, getNewHeight(l,r))
             }
         } 
-        . ensuring (res => res.isAVL  &&   (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)))
+        . ensuring (res => res.isAVL  && (res.size == l.size + r.size + 1)  && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)))
 
         def balanceRight(n: BigInt, l:Tree, r:Tree):Tree = {
             require( 
@@ -215,7 +215,7 @@ object AVL {
                 Node(n, l, r, getNewHeight(l,r))
             }
         }
-        .ensuring(res=> res.isAVL && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)))
+        .ensuring(res=> res.isAVL && (res.size == l.size + r.size + 1)  && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)))
 
 
         def insertAVL(new_key: BigInt):Tree = {
@@ -260,7 +260,7 @@ object AVL {
                 }
             }
 
-        }. ensuring(res=> res.isAVL && stainless.math.abs(res.height - old(this).height) <=1)
+        }. ensuring(res=> res.isAVL && ((res.size == old(this).size + 1) || (res.size == old(this).size)) && stainless.math.abs(res.height - old(this).height) <=1)
 
         def delete_max(): (BigInt, Tree) = {
             require(this.size > 0 && isAVL)
@@ -270,6 +270,7 @@ object AVL {
                     check(stainless.math.abs(r.height - l.height)<=1)
                     check(l.height == -1 || l.height == 0)
                     check(l.height == this.height -1)
+                    check(r.size == 0 && (l.size + 1) == this.size)
                     (n,l)
                 }
                 case Node(n, l, r ,h) => {
@@ -284,7 +285,7 @@ object AVL {
                     (n_prim, balanceLeft(n, l, r_prim))
                 }
             }
-        }.ensuring(res => res._2.isAVL && (res._2.height == old(this).height || res._2.height == old(this).height - 1) && res._2.checkGreatest(res._1) && this.getKeySet.contains(res._1) && res._2.getKeySet.subsetOf(old(this).getKeySet))
+        }.ensuring(res => res._2.isAVL && (res._2.size + 1 == old(this).size) && (res._2.height == old(this).height || res._2.height == old(this).height - 1) && res._2.checkGreatest(res._1) && this.getKeySet.contains(res._1) && res._2.getKeySet.subsetOf(old(this).getKeySet))
 
         def delete_root(): Tree = { 
             require(size > 0 && isAVL)
@@ -293,6 +294,8 @@ object AVL {
                 case Node(n, l, r ,h ) if l.size == 0 => r
                 case Node(n, l, r ,h ) => {
                     val (n_prim, l_prim) = l.delete_max()
+                    check(l_prim.size + 1 == l.size)
+
                     check(l_prim.checkGreatest(n_prim))
                     check(r.checkSmallest(n_prim))
                     check(l_prim.isAVL && r.isAVL)
@@ -301,7 +304,7 @@ object AVL {
                     balanceRight(n_prim, l_prim, r)
                 }
             }
-        }.ensuring (res=> res.isAVL && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
+        }.ensuring (res=> res.isAVL && (res.size + 1 == old(this).size) && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
 
 
         def deleteAVL(key: BigInt): Tree = {
@@ -329,7 +332,8 @@ object AVL {
                     }
                 }
             }
-        }.ensuring(res=> res.isAVL && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
+        }.ensuring(res=> res.isAVL && ((res.size == old(this).size) || (res.size + 1 == old(this).size)) && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
+    
     }
 
         
