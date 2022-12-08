@@ -8,9 +8,9 @@ import stainless.proof._
 
 
 object AVL {
-    // Define binary tree classes
+    
     sealed abstract class Tree {
-        // Get all keys
+        
         def getKeySet: Set[BigInt] = this match {
             case Empty() => Set.empty
             case Node(k, l, r, _) => l.getKeySet ++ Set(k) ++ r.getKeySet
@@ -106,9 +106,7 @@ object AVL {
             decreases(size)
             this match {
                 case Empty() => true
-                // case Node(_, l, r, h) => stainless.math.abs(l.height - r.height) <= 1 && l.isBalanced && r.isBalanced
-            
-                case Node(_, l, r, h) => (l.height - r.height == 1 || r.height - l.height == 1 || r.height == l.height) && l.isBalanced && r.isBalanced
+                case Node(_, l, r, h) => (l.height - r.height == 1 || r.height - l.height == 1 || r.height == l.height) && l.isBalanced && r.isBalanced // stainless.math.abs mozda nece da radi
             }
         }
 
@@ -119,8 +117,6 @@ object AVL {
             }
         }
 
-
-        //    // Helper functions
         def balanceLeft(n: BigInt, l:Tree, r:Tree):Tree = {
             require( 
                 l.checkGreatest(n) && r.checkSmallest(n) && l.isAVL && r.isAVL && 
@@ -163,9 +159,6 @@ object AVL {
                             }
                         } else {
                             val n1 =  Node(n,lr,r, getNewHeight(lr,r))
-                            // check(ll.isAVL)
-                            // check(lr.isAVL)
-                            // check(stainless.math.abs(ll.height - n1.height) <=1)
                             Node(ln, ll,n1 ,getNewHeight(ll,n1))
                         }
                     }
@@ -294,7 +287,6 @@ object AVL {
                     check(r_prim.checkGreatest(n_prim))
                     check(n_prim > n)
                     check(l.isAVL && r_prim.isAVL)
-                    // check(r_prim.height == r.height - 1)
                     check((stainless.math.abs(l.height - r_prim.height) <=1) || ( l.height == r_prim.height+2))
                     (n_prim, balanceLeft(n, l, r_prim))
                 }
@@ -313,7 +305,6 @@ object AVL {
                     check(l_prim.checkGreatest(n_prim))
                     check(r.checkSmallest(n_prim))
                     check(l_prim.isAVL && r.isAVL)
-                    // check(r_prim.height == r.height - 1)
                     check((stainless.math.abs(l_prim.height - r.height) <=1) || ( l_prim.height +2 == r.height))
                     balanceRight(n_prim, l_prim, r)
                 }
@@ -333,7 +324,6 @@ object AVL {
                         check(l_prim.checkGreatest(n)) // skontaj da je l_prim subset l
                         check(r.checkSmallest(n))
                         check(l_prim.isAVL && r.isAVL)
-                        // check(r_prim.height == r.height - 1)
                         check((stainless.math.abs(l_prim.height - r.height) <=1) || ( l_prim.height +2 == r.height))
                         balanceRight(n, l_prim, r)
                     } else {
@@ -357,13 +347,12 @@ object AVL {
                 case Node(kprim, l, r, _) => {
                     if (r.height <= tr.height + 1) {
                         val tprim = Node(k,r,tr,getNewHeight(r,tr))
-//  require(l.checkGreatest(n) && r.checkSmallest(n) && l.isAVL && r.isAVL && ((stainless.math.abs(l.height - r.height) <=1) || ( l.height == r.height+2)))
+                        
                         check(l.checkGreatest(kprim))
                         check(r.checkSmallest(kprim) ==>  tprim.checkSmallest(kprim))
 
                         check(tprim.isAVL)
 
-                        // check(((tl.height > tr.height + 1) && (r.height <=tr.height + 1 )) &&   ==> l.height + 1)
                         check(l.height <= tr.height + 2)
                         check(tr.height - 1 <= r.height)
                         check(tr.height - 2 <= l.height)
@@ -371,22 +360,12 @@ object AVL {
                         check(tr.height + 2 >= l.height)
                         check(tr.height + 2 >= tprim.height)
                         check(tr.height + 1 <= tprim.height)
-                        // check((r.height > l.height ==>(  l.height == tr.height && tl.height == r.height + 1 && tprim.height == r.height+1)) ==> (( l.height+2 == tprim.height)))
                         check((r.height == l.height ==> (l.height == tr.height + 1 && tprim.height == tr.height+2)) ==>  ((stainless.math.abs(l.height - tprim.height) <=1) || ( l.height == tprim.height-2)))
-                        check((r.height < l.height ==>(( r.height == l.height-1 && l.height > tr.height && l.height <= tr.height + 2) && (r.height == tr.height || r.height == tr.height +1) && tprim.height == r.height+1)) ==>  ((stainless.math.abs(l.height - tprim.height) <=1) || ( l.height == tprim.height-2)))
-                        // check(r.height == l.height -1 ==> )
-                        check((stainless.math.abs(l.height - tprim.height) <=1) || ( l.height == tprim.height-2))
+                        check(r.height < l.height ==>(( r.height == l.height-1 && l.height > tr.height && l.height <= tr.height + 2) && (r.height == tr.height || r.height == tr.height +1) && tprim.height == r.height+1))
                         
-                        
-                        
-                        // check(((tl.height > tr.height + 1) && (r.height <=tr.height + 1 )) ==> l.height > r.height) 
-                        // check(((tl.height > tr.height + 1) && (r.height <=tr.height + 1 ))  ==> l.height > tr.height + 1)
-                        // check(l.height > tr.height + 1)
                         balanceRight(kprim,l, tprim)
                     }
                     else {
-
-                        // require(tl.size > 0 && tr.size > 0 && tl.isAVL && tr.isAVL && tl.checkGreatest(k) && tr.checkSmallest(k) && tl.height > tr.height + 1)
                         check(r.size > 0)
                         check(l.checkGreatest(k))
                         check(r.checkGreatest(k))
@@ -394,15 +373,10 @@ object AVL {
                         val tprim = joinRightAVL(r, k, tr)
                         check(tprim.isAVL)
                         
-                        // check(l.checkGreatest(k))
-                        // check(tr.checkSmallest(k) && r.checkSmallest()tprim.checkSmallest(k))
-                        // check(stainless.math.abs(r.height - tr.height) <=2)
-                        // check((r.height == tr.height + 2) ==> (tprim.height == r.height-1 || tprim.height == r.height+1))
                         check(((tprim.height >= r.height) && (tprim.height <= r.height + 1) && r.height < l.height) ==> (stainless.math.abs(l.height - tprim.height) <=1))
                         check(((tprim.height <= r.height + 1)  &&  (r.height == l.height)) ==> (stainless.math.abs(l.height - tprim.height) <=1))
                         check(((tprim.height >= r.height) && (tprim.height <= r.height + 1) && r.height > l.height) ==> ((stainless.math.abs(l.height - tprim.height) <=1) || ( l.height == tprim.height-2)))
                         
-                        check((stainless.math.abs(l.height - tprim.height) <=1) || ( l.height == tprim.height-2))
                         balanceRight(kprim, l, tprim)
                     }
                 }
@@ -418,7 +392,6 @@ object AVL {
                 case Node(kprim, l, r, _) => {
                     if (l.height <= tl.height + 1) {
                         val tprim = Node(k,tl, l,getNewHeight(tl,l))
-//  require(l.checkGreatest(n) && r.checkSmallest(n) && l.isAVL && r.isAVL && ((stainless.math.abs(l.height - r.height) <=1) || ( l.height == r.height+2)))
                      
                         check(tl.checkGreatest(k))
                         check(l.checkSmallest(k))
@@ -429,30 +402,12 @@ object AVL {
 
                         check(l.checkSmallest(kprim) ==> tprim.checkGreatest(kprim))
                         check(r.checkSmallest(kprim))
-                        // check(((tl.height > tr.height + 1) && (r.height <=tr.height + 1 )) &&   ==> l.height + 1)
-                        // check(l.height <= tl.height + 2)
-                        // check(tl.height - 1 <= r.height)
-                        // check(tl.height - 2 <= l.height)
-                        // check(tl.height + 1 >= r.height)
-                        // check(tl.height + 2 >= l.height)
-                        // check(tl.height + 2 >= tprim.height)
-                        // check(tl.height + 1 <= tprim.height)
-                        // check((r.height > l.height ==>(  l.height == tr.height && tl.height == r.height + 1 && tprim.height == r.height+1)) ==> (( l.height+2 == tprim.height)))
                         check((r.height == l.height ==> (l.height == tl.height + 1 && tprim.height == tl.height+2)) ==>  ((stainless.math.abs(l.height - tprim.height) <=1) || ( l.height == tprim.height-2)))
-                        check((l.height < r.height ==>(( l.height == r.height-1 && r.height > tl.height && r.height <= tl.height + 2) && (l.height == tl.height || l.height == tl.height +1) && tprim.height == l.height+1)) ==>  ((stainless.math.abs(r.height - tprim.height) <=1) || ( r.height == tprim.height-2)))
-                        // check(r.height == l.height -1 ==> )
-                        check((stainless.math.abs(r.height - tprim.height) <=1) || ( r.height == tprim.height-2))
+                        check(l.height < r.height ==>(( l.height == r.height-1 && r.height > tl.height && r.height <= tl.height + 2) && (l.height == tl.height || l.height == tl.height +1) && tprim.height == l.height+1))
                         
-                        
-                        
-                        // check(((tl.height > tr.height + 1) && (r.height <=tr.height + 1 )) ==> l.height > r.height) 
-                        // check(((tl.height > tr.height + 1) && (r.height <=tr.height + 1 ))  ==> l.height > tr.height + 1)
-                        // check(l.height > tr.height + 1)
                         balanceLeft(kprim,tprim, r)
                     }
                     else {
-
-                        // require(tl.size > 0 && tr.size > 0 && tl.isAVL && tr.isAVL && tl.checkGreatest(k) && tr.checkSmallest(k) && tl.height > tr.height + 1)
                         check(l.size > 0)
                         check(l.checkSmallest(k))
                         check(r.checkSmallest(k))
@@ -460,15 +415,9 @@ object AVL {
                         val tprim = joinLeftAVL(tl, k, l)
                         check(tprim.isAVL)
                         
-                        // check(l.checkGreatest(k))
-                        // check(tr.checkSmallest(k) && r.checkSmallest()tprim.checkSmallest(k))
-                        // check(stainless.math.abs(r.height - tr.height) <=2)
-                        // check((r.height == tr.height + 2) ==> (tprim.height == r.height-1 || tprim.height == r.height+1))
                         check(((tprim.height >= l.height) && (tprim.height <= l.height + 1) && l.height < r.height) ==> (stainless.math.abs(r.height - tprim.height) <=1))
                         check(((tprim.height <= l.height + 1)  &&  (r.height == l.height)) ==> (stainless.math.abs(r.height - tprim.height) <=1))
                         check(((tprim.height >= l.height) && (tprim.height <= l.height + 1) && l.height > r.height) ==> ((stainless.math.abs(r.height - tprim.height) <=1) || ( r.height == tprim.height-2)))
-                        
-                        check((stainless.math.abs(r.height - tprim.height) <=1) || ( r.height == tprim.height-2))
                         balanceLeft(kprim, tprim, r)
                     }
                 }
