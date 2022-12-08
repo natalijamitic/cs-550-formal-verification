@@ -6,11 +6,24 @@ import stainless.collection._
 import stainless.lang._
 import stainless.proof._
 
-
 object AVL {
     
+    case class Node(key: BigInt, left: Tree, right: Tree) extends Tree
+    case class Empty() extends Tree
+
     sealed abstract class Tree {
-        
+        lazy val size: BigInt = (this match {
+            case Empty() => BigInt(0)
+            case Node(_, l, r) => l.size + 1 + r.size
+        }).ensuring(_ == getKeyList.length)
+
+        def height: BigInt = (
+            this match {
+                case Empty() => BigInt(-1)
+                case Node(k, l, r) => stainless.math.max(l.height , r.height) + 1
+            }
+        ).ensuring(_ > -2)
+
         def getKeySet: Set[BigInt] = this match {
             case Empty() => Set.empty
             case Node(k, l, r) => l.getKeySet ++ Set(k) ++ r.getKeySet
@@ -20,12 +33,6 @@ object AVL {
             case Empty() => List.empty[BigInt]
             case Node(k, l, r) => l.getKeyList ++ (k :: r.getKeyList)
         }).ensuring(_.content == this.getKeySet)
-        
-        lazy val size: BigInt = (this match {
-            case Empty() => BigInt(0)
-            case Node(_, l, r) => l.size + 1 + r.size
-        }) ensuring(_ == getKeyList.length)
-
 
         def checkGreatest(v: BigInt): Boolean = {
             forall((x:BigInt) => (this.getKeySet.contains(x) ==> x < v))
@@ -35,74 +42,18 @@ object AVL {
             forall((x:BigInt) => (this.getKeySet.contains(x) ==> v < x))
         } 
 
-        def isBST: Boolean = {
-            this match {
-                case Empty() => true
-                case Node(k, l, r) => l.checkGreatest(k) && r.checkSmallest(k) && l.isBST && r.isBST 
-            }
-        }
-
-        def lookup(searched: BigInt): Boolean = {
-            require(isBST)
-            this match {
-                case Empty() => false
-                case Node(value, left, right) =>
-                if (searched == value) {
-                    true
-                } else if(searched < value) {
-                    left.lookup(searched)
-                } else {
-                    right.lookup(searched)
-                }
-            }
-        } ensuring(res => res == this.getKeyList.contains(searched))
-
-        def lookupAVL(searched: BigInt): Boolean = {
-            require(isAVL)
-            this match {
-                case Empty() => false
-                case Node(value, left, right) =>
-                if (searched == value) {
-                    true
-                } else if(searched < value) {
-                    left.lookup(searched)
-                } else {
-                    right.lookup(searched)
-                }
-            }
-        } ensuring(res => res == this.getKeyList.contains(searched))
-
-        def insertBST(value: BigInt): Tree = {
-            require(isBST)
-            this match {
-                case Empty() => Node(value, Empty(), Empty())
-                case Node(v, l, r) => (if (v < value) {
-                    val nr = r.insertBST(value)
-                    Node(v, l, nr)
-                } else if (v > value) {
-                    val nl = l.insertBST(value)
-                    Node(v, nl, r)
-                } else {
-                    this
-                })
-            }
-        } ensuring(res => res.isBST && res.getKeySet == getKeySet ++ Set(value))
-
-        def height: BigInt = (
-            this match {
-                case Empty() => BigInt(-1)
-                case Node(k, l, r) => {
-                   stainless.math.max(l.height , r.height) + 1
-                }
-            }
-        ).ensuring(res => res > -2)
-
-        // Define AVL properties
         def isBalanced: Boolean = {
             decreases(size)
             this match {
                 case Empty() => true
                 case Node(_, l, r) => (l.height - r.height == 1 || r.height - l.height == 1 || r.height == l.height) && l.isBalanced && r.isBalanced // stainless.math.abs mozda nece da radi
+            }
+        }
+
+        def isBST: Boolean = {
+            this match {
+                case Empty() => true
+                case Node(k, l, r) => l.checkGreatest(k) && r.checkSmallest(k) && l.isBST && r.isBST 
             }
         }
 
@@ -112,6 +63,21 @@ object AVL {
                 case Node(k, l, r) => isBalanced && isBST && r.isAVL && l.isAVL
             }
         }
+    
+        def lookupAVL(searched: BigInt): Boolean = {
+            require(isAVL)
+            this match {
+                case Empty() => false
+                case Node(value, left, right) =>
+                if (searched == value) {
+                    true
+                } else if(searched < value) {
+                    left.lookupAVL(searched)
+                } else {
+                    right.lookupAVL(searched)
+                }
+            }
+        }.ensuring(res => res == this.getKeyList.contains(searched))
 
         def balanceLeft(n: BigInt, l:Tree, r:Tree):Tree = {
             require( 
@@ -160,13 +126,12 @@ object AVL {
                     }
                     case Empty() => Empty() // Should never happen
                 }
-            }else {
+            } else {
                 check(l.isAVL && r.isAVL)
                 check(stainless.math.abs(l.height - r.height) <=1)
                 Node(n, l, r)
             }
-        } 
-        . ensuring (res => res.isAVL  && (res.size == l.size + r.size + 1)  && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)) && l.getKeySet.subsetOf(res.getKeySet) && res.getKeySet.contains(n) && r.getKeySet.subsetOf(res.getKeySet))
+        }.ensuring (res => res.isAVL  && (res.size == l.size + r.size + 1)  && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)) && l.getKeySet.subsetOf(res.getKeySet) && res.getKeySet.contains(n) && r.getKeySet.subsetOf(res.getKeySet))
 
         def balanceRight(n: BigInt, l:Tree, r:Tree):Tree = {
             require( 
@@ -217,8 +182,7 @@ object AVL {
                 check(stainless.math.abs(l.height - r.height) <=1)
                 Node(n, l, r)
             }
-        }
-        .ensuring(res=> res.isAVL && (res.size == l.size + r.size + 1)  && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)) && l.getKeySet.subsetOf(res.getKeySet) && res.getKeySet.contains(n) && r.getKeySet.subsetOf(res.getKeySet))
+        }.ensuring(res=> res.isAVL && (res.size == l.size + r.size + 1)  && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)) && l.getKeySet.subsetOf(res.getKeySet) && res.getKeySet.contains(n) && r.getKeySet.subsetOf(res.getKeySet))
 
 
         def insertAVL(new_key: BigInt):Tree = {
@@ -241,7 +205,6 @@ object AVL {
                             check(((stainless.math.abs(ll.height - r.height) <=1) || ( ll.height == r.height+2)))
                             balanceLeft(k, ll , r)
                         }
-                 
                     } else {
                         check(r.isAVL)
                         val rr = r.insertAVL(new_key)
@@ -259,7 +222,7 @@ object AVL {
                 }
             }
 
-        }. ensuring(res=> res.isAVL && ((res.size == old(this).size + 1) || (res.size == old(this).size)) && stainless.math.abs(res.height - old(this).height) <=1)
+        }.ensuring(res=> res.isAVL && ((res.size == old(this).size + 1) || (res.size == old(this).size)) && stainless.math.abs(res.height - old(this).height) <=1)
 
         def delete_max(): (BigInt, Tree) = {
             require(this.size > 0 && isAVL)
@@ -303,7 +266,6 @@ object AVL {
             }
         }.ensuring (res=> res.isAVL && (res.size + 1 == old(this).size) && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
 
-
         def deleteAVL(key: BigInt): Tree = {
             require(isAVL)
             this match {
@@ -323,16 +285,13 @@ object AVL {
                         check(l.checkGreatest(n) && r_prim.checkSmallest(n)) // skontaj da je r_prim subset r
                         check(l.isAVL && r_prim.isAVL)
                         check((stainless.math.abs(l.height - r_prim.height) <=1) || ( l.height == r_prim.height+2))
-                   
+                    
                         balanceLeft(n, l, r_prim)
                     }
                 }
             }
         }.ensuring(res=> res.isAVL && ((res.size == old(this).size) || (res.size + 1 == old(this).size)) && res.getKeySet.subsetOf(old(this).getKeySet) && (old(this).height == res.height || old(this).height == res.height + 1))
-    
 
-
-    ///////////////////////////////////////////////////////////////////////
         def joinRightAVL(tl: Tree, k:BigInt, tr:Tree):Tree = {
             require(tl.size > 0 && tr.size > 0 && tl.isAVL && tr.isAVL && tl.checkGreatest(k) && tr.checkSmallest(k) && tl.height > tr.height + 1)
             tl match {
@@ -384,7 +343,7 @@ object AVL {
                 case Node(kprim, l, r) => {
                     if (l.height <= tl.height + 1) {
                         val tprim = Node(k,tl, l)
-                     
+                        
                         check(tl.checkGreatest(k))
                         check(l.checkSmallest(k))
                         check(tprim.isBST)
@@ -429,9 +388,6 @@ object AVL {
                 Node(k, tl, tr)
             }
         }.ensuring(res=> res.isAVL && res.size == tl.size + tr.size + 1 && tl.getKeySet.subsetOf(res.getKeySet) && res.getKeySet.contains(k) && tr.getKeySet.subsetOf(res.getKeySet))
-    
+
     }
- 
-    case class Node(key: BigInt, left: Tree, right: Tree) extends Tree
-    case class Empty() extends Tree
 }
