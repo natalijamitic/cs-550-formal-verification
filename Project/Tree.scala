@@ -13,30 +13,30 @@ case class Empty() extends Tree
 sealed abstract class Tree {
     lazy val size: BigInt = (this match {
         case Empty() => BigInt(0)
-        case Node(_, l, r) => l.size + 1 + r.size
-    }).ensuring(_ == getKeyList.length)
+        case Node(_, l, r) => l.size + BigInt(1) + r.size
+    }).ensuring(_ == toList.length)
 
     def height: BigInt = (this match {
         case Empty() => BigInt(-1)
         case Node(k, l, r) => stainless.math.max(l.height , r.height) + 1
     }).ensuring(_ > -2)
 
-    def getKeySet: Set[BigInt] = this match {
+    def toSet: Set[BigInt] = this match {
         case Empty() => Set.empty
-        case Node(k, l, r) => l.getKeySet ++ Set(k) ++ r.getKeySet
+        case Node(k, l, r) => l.toSet ++ Set(k) ++ r.toSet
     }
 
-    def getKeyList: List[BigInt] = (this match {
+    def toList: List[BigInt] = (this match {
         case Empty() => List.empty[BigInt]
-        case Node(k, l, r) => l.getKeyList ++ (k :: r.getKeyList)
-    }).ensuring(_.content == this.getKeySet)
+        case Node(k, l, r) => l.toList ++ (k :: r.toList)
+    }).ensuring(_.content == this.toSet)
 
     def checkGreatest(v: BigInt): Boolean = {
-        forall((x:BigInt) => (this.getKeySet.contains(x) ==> x < v))
+        forall((x:BigInt) => (this.toSet.contains(x) ==> x < v))
     } 
 
     def checkSmallest(v: BigInt): Boolean = {
-        forall((x:BigInt) => (this.getKeySet.contains(x) ==> v < x))
+        forall((x:BigInt) => (this.toSet.contains(x) ==> x > v))
     } 
 
     def isBalanced: Boolean = {
