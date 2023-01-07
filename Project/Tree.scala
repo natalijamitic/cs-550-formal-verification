@@ -43,7 +43,7 @@ sealed abstract class Tree {
         decreases(size)
         this match {
             case Empty() => true
-            case Node(_, l, r) => (l.height - r.height == 1 || r.height - l.height == 1 || r.height == l.height) && l.isBalanced && r.isBalanced // stainless.math.abs mozda nece da radi
+            case Node(_, l, r) => (l.height - r.height == 1 || r.height - l.height == 1 || r.height == l.height) && l.isBalanced && r.isBalanced
         }
     }
 
