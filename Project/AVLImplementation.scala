@@ -45,7 +45,7 @@ object AVL {
     def balanceLeft(n: BigInt, l: Tree, r: Tree): Tree = {
         require( 
             l.checkGreatest(n) && r.checkSmallest(n) && l.isAVL && r.isAVL && 
-            ((stainless.math.abs(l.height - r.height) <=1) || ( l.height == r.height+2)))
+            ((stainless.math.abs(l.height - r.height) <= 1) || ( l.height == r.height + 2)))
 
         if (l.height == r.height + 2) {
             l match{
@@ -80,7 +80,7 @@ object AVL {
     def balanceRight(n: BigInt, l: Tree, r: Tree): Tree = {
         require( 
             l.checkGreatest(n) && r.checkSmallest(n) && l.isAVL && r.isAVL && 
-            (( stainless.math.abs(l.height - r.height) <=1) || ( r.height == l.height+2)))
+            (( stainless.math.abs(l.height - r.height) <= 1) || ( r.height == l.height + 2)))
 
         if (r.height == l.height + 2) {
             r match{
@@ -229,7 +229,7 @@ object AVL {
         t match {
             case Empty() => (Empty(), false, Empty())
             case Node(m, l, r) => {
-                if (m==k) {
+                if (m == k) {
                     (l, true, r)
                 } else if(k < m) {
                     val (lprim, b, rprim) = splitAVL(l, k)
@@ -242,46 +242,3 @@ object AVL {
         }
     }.ensuring((t1, success, t2) => (t1.isAVL && t2.isAVL && t1.checkGreatest(k) && t2.checkSmallest(k) && t1.toSet.subsetOf(t.toSet) && t2.toSet.subsetOf(t.toSet)) && (success ==> t.toSet.contains(k))) 
 }
-
-// function Union(t1, t2):
-// if t1 = nil:
-//     return t2
-// if t2 = nil:
-//     return t1
-// (t<, b, t>) = Split(t2, t1.root)
-// return Join(Union(left(t1), t<), t1.root, Union(right(t1), t>))
-
-/*
-    def unionAVL(t1: Tree, t2:Tree) : Tree = {
-        require(t1.isAVL && t2.isAVL)
-        // decreases(t1.size)
-        if (t2.size == 0){
-            t1
-        } else{
-            t1 match {
-                case Empty() => t2
-                case Node(t1root, t1left ,t1right) => {
-                    val (tleft, b, tright) = splitAVL(t2,t1root)
-                    check(tright.checkSmallest(t1root))
-                    check(tleft.checkGreatest(t1root))
-                    // tleft < t1root < tright
-
-                    val temp1 = unionAVL(t1left, tleft)
-                    val temp2 = unionAVL(t1right, tright)
-                    
-                    
-                    check(tright.checkSmallest(t1root)) //donji
-                    check(tleft.checkGreatest(t1root)) //donji
-
-                    check((tright.checkSmallest(t1root) && t1right.checkSmallest(t1root) && (t1right.toSet ++ tright.toSet == temp2.toSet)) ==> temp2.checkSmallest(t1root)) // novitet
-                     
-
-                    check(temp1.checkGreatest(t1root)) // prolazi
-                    check(temp2.checkSmallest(t1root)) //zeza
-
-                    joinAVL(temp1, t1root, temp2)
-                }
-            }         
-        }
-    }. ensuring(res => res.isAVL && ((t1.toSet ++ t2.toSet) == res.toSet)) //&& (t1.toSet == old(t1).toSet) && (t2.toSet == old(t2).toSet)
-*/
