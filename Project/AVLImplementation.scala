@@ -42,7 +42,7 @@ object AVL {
         }
     }.holds
 
-    def balanceLeft(n: BigInt, l:Tree, r:Tree): Tree = {
+    def balanceLeft(n: BigInt, l: Tree, r: Tree): Tree = {
         require( 
             l.checkGreatest(n) && r.checkSmallest(n) && l.isAVL && r.isAVL && 
             ((stainless.math.abs(l.height - r.height) <=1) || ( l.height == r.height+2)))
@@ -77,7 +77,7 @@ object AVL {
         }
     }.ensuring(res => res.isAVL  && (res.size == l.size + r.size + 1)  && (res.height == stainless.math.max(l.height, r.height) +1 || res.height == stainless.math.max(l.height, r.height)) && ((l.toSet ++ r.toSet)+ n) == res.toSet)
 
-    def balanceRight(n: BigInt, l:Tree, r:Tree): Tree = {
+    def balanceRight(n: BigInt, l: Tree, r: Tree): Tree = {
         require( 
             l.checkGreatest(n) && r.checkSmallest(n) && l.isAVL && r.isAVL && 
             (( stainless.math.abs(l.height - r.height) <=1) || ( r.height == l.height+2)))
@@ -181,7 +181,7 @@ object AVL {
         }
     }.ensuring(res => res.isAVL && ((res.size == tree.size) || (res.size + 1 == tree.size)) && res.toSet.subsetOf(tree.toSet) && (tree.height == res.height || tree.height == res.height + 1) && !res.toSet.contains(key))
 
-    def joinRightAVL(tl: Tree, k:BigInt, tr:Tree): Tree = {
+    def joinRightAVL(tl: Tree, k: BigInt, tr: Tree): Tree = {
         require(tl.size > 0 && tl.isAVL && tr.isAVL && tl.checkGreatest(k) && tr.checkSmallest(k) && tl.height > tr.height + 1)
         tl match {
             case Node(kprim, l, r) => {
@@ -197,7 +197,7 @@ object AVL {
         }
     }.ensuring(res => res.isAVL && res.height <= tl.height + 1 && res.height >= tl.height && res.height >= tr.height + 1 && res.size == tl.size + tr.size + 1  && ((tl.toSet ++ tr.toSet)+ k) == res.toSet)
 
-    def joinLeftAVL(tl: Tree, k:BigInt, tr:Tree): Tree = {
+    def joinLeftAVL(tl: Tree, k: BigInt, tr: Tree): Tree = {
         require(tr.size > 0 && tl.isAVL && tr.isAVL && tl.checkGreatest(k) && tr.checkSmallest(k) && tl.height + 1 < tr.height)
         tr match {
             case Node(kprim, l, r) => {
@@ -240,15 +240,16 @@ object AVL {
                 }
             }
         }
-    }.ensuring((t1, success, t2) => (t1.isAVL && t2.isAVL && t1.checkGreatest(k) && t2.checkSmallest(k) && t1.toSet.subsetOf(t.toSet) && t2.toSet.subsetOf(t.toSet)) && (success ==> t.toSet.contains(k)))
+    }.ensuring((t1, success, t2) => (t1.isAVL && t2.isAVL && t1.checkGreatest(k) && t2.checkSmallest(k) && t1.toSet.subsetOf(t.toSet) && t2.toSet.subsetOf(t.toSet)) && (success ==> t.toSet.contains(k))) 
+}
 
-    // function Union(t1, t2):
-    // if t1 = nil:
-    //     return t2
-    // if t2 = nil:
-    //     return t1
-    // (t<, b, t>) = Split(t2, t1.root)
-    // return Join(Union(left(t1), t<), t1.root, Union(right(t1), t>))
+// function Union(t1, t2):
+// if t1 = nil:
+//     return t2
+// if t2 = nil:
+//     return t1
+// (t<, b, t>) = Split(t2, t1.root)
+// return Join(Union(left(t1), t<), t1.root, Union(right(t1), t>))
 
 /*
     def unionAVL(t1: Tree, t2:Tree) : Tree = {
@@ -284,4 +285,3 @@ object AVL {
         }
     }. ensuring(res => res.isAVL && ((t1.toSet ++ t2.toSet) == res.toSet)) //&& (t1.toSet == old(t1).toSet) && (t2.toSet == old(t2).toSet)
 */
-}
