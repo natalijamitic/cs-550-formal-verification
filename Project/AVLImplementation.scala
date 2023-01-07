@@ -179,7 +179,7 @@ object AVL {
                 }
             }
         }
-    }.ensuring(res => res.isAVL && ((res.size == tree.size) || (res.size + 1 == tree.size)) && res.toSet.subsetOf(tree.toSet) && (tree.height == res.height || tree.height == res.height + 1) && !res.toSet.contains(key))
+    }.ensuring(res => res.isAVL && (!tree.toSet.contains(key) ==> (res.size == tree.size)) && (res.toSet.contains(key) ==> (res.size + 1 == tree.size)) && res.toSet.subsetOf(tree.toSet) && (tree.height == res.height || tree.height == res.height + 1) && !res.toSet.contains(key))
 
     def joinRightAVL(tl: Tree, k: BigInt, tr: Tree): Tree = {
         require(tl.size > 0 && tl.isAVL && tr.isAVL && tl.checkGreatest(k) && tr.checkSmallest(k) && tl.height > tr.height + 1)
