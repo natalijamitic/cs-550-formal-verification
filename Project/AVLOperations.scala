@@ -55,7 +55,7 @@ trait AVLOperations {
      * @param tr the right AVL tree
      * @return the joined AVL tree
      */
-    def join(tl : Tree, k:BigInt, tr:Tree): Tree
+    def join(tl: Tree, k: BigInt, tr: Tree): Tree
 
     /**
      * Checks if the AVL tree is empty.
