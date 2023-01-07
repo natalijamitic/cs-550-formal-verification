@@ -1,0 +1,259 @@
+carevic:/Project$ ../../stainless/stainless.sh *.scala  --timeout=10 --vc-cache=false --json=out.json
+[  Info  ] Starting verification...
+[  Info  ] Verified: 248 / 248
+[  Info  ]   ┌───────────────────┐
+[  Info  ] ╔═╡ stainless summary ╞═════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+[  Info  ] ║ └───────────────────┘                                                                                                             ║
+[  Info  ] ║ AVLImplementation.scala:39:9:      BSTSpreadLeft   body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:39:9:      BSTSpreadLeft   postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:40:45:     BSTSpreadLeft   postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:41:29:     BSTSpreadLeft   postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:31:9:      BSTSpreadRight  body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:31:9:      BSTSpreadRight  postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:32:45:     BSTSpreadRight  postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:33:29:     BSTSpreadRight  postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║                                    _$success       non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║                                    _$t1            non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║                                    _$t2            non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:51:13:     balanceLeft     body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:51:13:     balanceLeft     postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:54:25:     balanceLeft     body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:54:25:     balanceLeft     postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:57:39:     balanceLeft     body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:58:39:     balanceLeft     body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:62:33:     balanceLeft     body assertion: Inlined precondition of check             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:62:39:     balanceLeft     precond. (call BSTSpreadRight((scrut.key): @DropVCs ...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:64:33:     balanceLeft     postcondition                                             valid  nativez3  3.4 ║
+[  Info  ] ║ AVLImplementation.scala:66:45:     balanceLeft     postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:69:31:     balanceLeft     body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:70:25:     balanceLeft     postcondition                                             valid  nativez3  2.8 ║
+[  Info  ] ║ AVLImplementation.scala:73:33:     balanceLeft     postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:76:13:     balanceLeft     postcondition                                             valid  nativez3  0.3 ║
+[  Info  ] ║ AVLImplementation.scala:86:13:     balanceRight    body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:86:13:     balanceRight    postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:89:25:     balanceRight    body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:89:25:     balanceRight    postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:91:39:     balanceRight    body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:92:39:     balanceRight    body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:96:33:     balanceRight    body assertion: Inlined precondition of check             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:96:39:     balanceRight    precond. (call BSTSpreadLeft((scrut.key): @DropVCs ,...)  valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:98:33:     balanceRight    postcondition                                             valid  nativez3  4.6 ║
+[  Info  ] ║ AVLImplementation.scala:100:45:    balanceRight    postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:103:31:    balanceRight    body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:104:25:    balanceRight    postcondition                                             valid  nativez3  3.0 ║
+[  Info  ] ║ AVLImplementation.scala:107:33:    balanceRight    postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:110:13:    balanceRight    postcondition                                             valid  nativez3  0.4 ║
+[  Info  ] ║ Tree.scala:34:9:                   checkGreatest   type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:38:9:                   checkSmallest   type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║                                    delete          precond. (call delete(({   assert(thiss.isInstanceOf...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:38:9:          delete          precond. (call delete(({   assert(thiss.isInstanceOf...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:14:50:                   delete          precond. (call deleteAVL({   assert(thiss.isInstance...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:14:60:                   delete          cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:166:9:     deleteAVL       non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:168:9:     deleteAVL       body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:168:9:     deleteAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:169:29:    deleteAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:172:21:    deleteAVL       postcondition                                             valid  nativez3  0.5 ║
+[  Info  ] ║ AVLImplementation.scala:172:21:    deleteAVL       precond. (call delete_root(tree))                         valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:174:34:    deleteAVL       measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:174:34:    deleteAVL       precond. (call deleteAVL((scrut.left): @DropVCs , key))   valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:175:21:    deleteAVL       postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:175:21:    deleteAVL       precond. (call balanceRight((scrut.key): @DropVCs , ...)  valid  nativez3  1.8 ║
+[  Info  ] ║ AVLImplementation.scala:177:34:    deleteAVL       measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:177:34:    deleteAVL       precond. (call deleteAVL((scrut.right): @DropVCs , key))  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:178:21:    deleteAVL       postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:178:21:    deleteAVL       precond. (call balanceLeft((scrut.key): @DropVCs , (...)  valid  nativez3  1.1 ║
+[  Info  ] ║ AVLImplementation.scala:141:9:     delete_max      non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:143:9:     delete_max      body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:143:9:     delete_max      postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:145:17:    delete_max      postcondition                                             valid  nativez3  0.3 ║
+[  Info  ] ║ AVLImplementation.scala:148:40:    delete_max      measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:148:40:    delete_max      precond. (call delete_max((scrut.right): @DropVCs ))      valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:149:17:    delete_max      postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:149:26:    delete_max      precond. (call balanceLeft((scrut.key): @DropVCs , (...)  valid  nativez3  0.3 ║
+[  Info  ] ║ AVLImplementation.scala:156:9:     delete_root     body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:156:9:     delete_root     postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:157:50:    delete_root     postcondition                                             valid  nativez3  0.3 ║
+[  Info  ] ║ AVLImplementation.scala:158:50:    delete_root     postcondition                                             valid  nativez3  0.5 ║
+[  Info  ] ║ AVLImplementation.scala:160:40:    delete_root     precond. (call delete_max((scrut.left): @DropVCs ))       valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:161:17:    delete_root     postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:161:17:    delete_root     precond. (call balanceRight(n_prim, l_prim, (scrut.r...)  valid  nativez3  0.1 ║
+[  Info  ] ║ Tree.scala:19:9:                   height          non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:19:27:                  height          body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:19:27:                  height          postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:20:25:                  height          postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:21:31:                  height          postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:21:50:                  height          measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:21:61:                  height          measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║                                    insert          precond. (call insert(({   assert(thiss.isInstanceOf...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:30:9:          insert          precond. (call insert(({   assert(thiss.isInstanceOf...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:13:50:                   insert          precond. (call insertAVL({   assert(thiss.isInstance...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:13:60:                   insert          cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:115:9:     insertAVL       non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:117:9:     insertAVL       body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:117:9:     insertAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:118:29:    insertAVL       postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:123:30:    insertAVL       measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:123:30:    insertAVL       precond. (call insertAVL((scrut.left): @DropVCs , ne...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:127:25:    insertAVL       postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:127:25:    insertAVL       precond. (call balanceLeft((scrut.key): @DropVCs , l...)  valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:130:30:    insertAVL       measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:130:30:    insertAVL       precond. (call insertAVL((scrut.right): @DropVCs , n...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:134:25:    insertAVL       postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:134:25:    insertAVL       precond. (call balanceRight((scrut.key): @DropVCs , ...)  valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:139:127:   insertAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:139:127:   insertAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:139:127:   insertAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:10:13:                   inv             cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:10:13:                   inv             precond. (call inv(({   assert(thiss.isInstanceOf[AV...)  valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:55:9:                   isAVL           non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:55:26:                  isAVL           body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:55:26:                  isAVL           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:56:25:                  isAVL           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:57:31:                  isAVL           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:57:54:                  isAVL           measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:57:65:                  isAVL           measure decreases                                         valid  nativez3  0.1 ║
+[  Info  ] ║ Tree.scala:50:9:                   isBST           non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:50:26:                  isBST           body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:50:26:                  isBST           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:51:25:                  isBST           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:52:31:                  isBST           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:52:75:                  isBST           measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:52:86:                  isBST           measure decreases                                         valid  nativez3  0.1 ║
+[  Info  ] ║ Tree.scala:43:19:                  isBalanced      non-negative measure                                      valid  nativez3  0.1 ║
+[  Info  ] ║ Tree.scala:44:9:                   isBalanced      body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:44:9:                   isBalanced      type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:45:29:                  isBalanced      type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:46:35:                  isBalanced      type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:46:117:                 isBalanced      measure decreases                                         valid  nativez3  0.2 ║
+[  Info  ] ║ Tree.scala:46:133:                 isBalanced      measure decreases                                         valid  nativez3  0.1 ║
+[  Info  ] ║                                    isEmpty         precond. (call isEmpty(({   assert(thiss.isInstanceO...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:65:9:          isEmpty         precond. (call isEmpty(({   assert(thiss.isInstanceO...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:25:37:                   isEmpty         cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║                                    join            precond. (call join(({   assert(thiss.isInstanceOf[A...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:58:9:          join            precond. (call join(({   assert(thiss.isInstanceOf[A...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:19:13:                   join            precond. (call joinAVL(tl, k, tr))                        valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:219:13:    joinAVL         postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:219:13:    joinAVL         precond. (call joinRightAVL(tl, k, tr))                   valid  nativez3  0.4 ║
+[  Info  ] ║ AVLImplementation.scala:221:13:    joinAVL         postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:221:13:    joinAVL         precond. (call joinLeftAVL(tl, k, tr))                    valid  nativez3  0.4 ║
+[  Info  ] ║ AVLImplementation.scala:223:13:    joinAVL         postcondition                                             valid  nativez3  0.2 ║
+[  Info  ] ║ AVLImplementation.scala:200:9:     joinLeftAVL     non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:202:9:     joinLeftAVL     body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:202:9:     joinLeftAVL     postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:205:30:    joinLeftAVL     body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:206:21:    joinLeftAVL     postcondition                                             valid  nativez3  0.4 ║
+[  Info  ] ║ AVLImplementation.scala:206:21:    joinLeftAVL     precond. (call balanceLeft((scrut.key): @DropVCs , t...)  valid  nativez3  0.4 ║
+[  Info  ] ║ AVLImplementation.scala:209:33:    joinLeftAVL     measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:209:33:    joinLeftAVL     precond. (call joinLeftAVL(tl, k, (scrut.left): @Dro...)  valid  nativez3  1.0 ║
+[  Info  ] ║ AVLImplementation.scala:210:21:    joinLeftAVL     postcondition                                             valid  nativez3  0.2 ║
+[  Info  ] ║ AVLImplementation.scala:210:21:    joinLeftAVL     precond. (call balanceLeft((scrut.key): @DropVCs , t...)  valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:184:9:     joinRightAVL    non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:186:9:     joinRightAVL    body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:186:9:     joinRightAVL    postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:189:30:    joinRightAVL    body assertion: Inner refinement lifting                  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:190:21:    joinRightAVL    postcondition                                             valid  nativez3  0.6 ║
+[  Info  ] ║ AVLImplementation.scala:190:21:    joinRightAVL    precond. (call balanceRight((scrut.key): @DropVCs , ...)  valid  nativez3  0.7 ║
+[  Info  ] ║ AVLImplementation.scala:193:33:    joinRightAVL    measure decreases                                         valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:193:33:    joinRightAVL    precond. (call joinRightAVL((scrut.right): @DropVCs ...)  valid  nativez3  1.8 ║
+[  Info  ] ║ AVLImplementation.scala:194:21:    joinRightAVL    postcondition                                             valid  nativez3  0.2 ║
+[  Info  ] ║ AVLImplementation.scala:194:21:    joinRightAVL    precond. (call balanceRight((scrut.key): @DropVCs , ...)  valid  nativez3  0.2 ║
+[  Info  ] ║                                    lookup          precond. (call lookup(({   assert(thiss.isInstanceOf...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:22:9:          lookup          precond. (call lookup(({   assert(thiss.isInstanceOf...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:12:53:                   lookup          precond. (call lookupAVL({   assert(thiss.isInstance...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:12:63:                   lookup          cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:14:9:      lookupAVL       non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:16:9:      lookupAVL       body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:16:9:      lookupAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:17:29:     lookupAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:20:17:     lookupAVL       postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:22:17:     lookupAVL       measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:22:17:     lookupAVL       postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:22:17:     lookupAVL       precond. (call lookupAVL((scrut.left): @DropVCs , se...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:24:17:     lookupAVL       measure decreases                                         valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:24:17:     lookupAVL       postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:24:17:     lookupAVL       precond. (call lookupAVL((scrut.right): @DropVCs , s...)  valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:14:14:                  size            non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:14:30:                  size            body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:14:30:                  size            postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:15:25:                  size            postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:16:31:                  size            measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:16:31:                  size            postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ Tree.scala:16:52:                  size            measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║                                    size            precond. (call size(({   assert(thiss.isInstanceOf[A...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:72:9:          size            precond. (call size(({   assert(thiss.isInstanceOf[A...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:26:33:                   size            cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║                                    split           precond. (call split(({   assert(thiss.isInstanceOf[...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:48:9:          split           precond. (call split(({   assert(thiss.isInstanceOf[...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:16:66:                   split           precond. (call splitAVL({   assert(thiss.isInstanceO...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:16:75:                   split           cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:227:9:     splitAVL        non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:229:9:     splitAVL        body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:229:9:     splitAVL        postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:230:29:    splitAVL        postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:233:21:    splitAVL        postcondition                                             valid  nativez3  0.1 ║
+[  Info  ] ║ AVLImplementation.scala:235:45:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:235:45:    splitAVL        precond. (call splitAVL((scrut.left): @DropVCs , k))      valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:236:21:    splitAVL        postcondition                                             valid  nativez3  0.2 ║
+[  Info  ] ║ AVLImplementation.scala:236:32:    splitAVL        precond. (call joinAVL(rprim, (scrut.key): @DropVCs ...)  valid  nativez3  0.5 ║
+[  Info  ] ║ AVLImplementation.scala:238:45:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:238:45:    splitAVL        precond. (call splitAVL((scrut.right): @DropVCs , k))     valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:239:21:    splitAVL        postcondition                                             valid  nativez3  0.2 ║
+[  Info  ] ║ AVLImplementation.scala:239:22:    splitAVL        precond. (call joinAVL((scrut.left): @DropVCs , (scr...)  valid  nativez3  0.4 ║
+[  Info  ] ║ AVLImplementation.scala:243:38:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:38:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:38:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:38:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:38:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:50:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:50:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:50:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:50:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:50:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:62:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:62:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:62:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:62:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:62:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:85:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:85:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:85:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:85:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:85:    splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:108:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:108:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:108:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:108:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:108:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:138:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:138:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:138:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:138:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:138:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:170:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:170:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:170:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:170:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ AVLImplementation.scala:243:170:   splitAVL        measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:29:9:                   toList          non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:29:33:                  toList          body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:29:33:                  toList          postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:30:25:                  toList          postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:31:31:                  toList          measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:31:31:                  toList          postcondition                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:31:49:                  toList          measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║                                    toSet           precond. (call toSet(({   assert(thiss.isInstanceOf[...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVLOperations.scala:79:9:          toSet           precond. (call toSet(({   assert(thiss.isInstanceOf[...)  valid  nativez3  0.0 ║
+[  Info  ] ║ AVL.scala:27:39:                   toSet           cast correctness                                          valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:24:9:                   toSet           non-negative measure                                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:24:30:                  toSet           body assertion: match exhaustiveness                      valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:24:30:                  toSet           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:25:25:                  toSet           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:26:31:                  toSet           measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:26:31:                  toSet           type-checking                                             valid  nativez3  0.0 ║
+[  Info  ] ║ Tree.scala:26:52:                  toSet           measure decreases                                         valid  nativez3  0.0 ║
+[  Info  ] ╟┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄╢
+[  Info  ] ║ total: 248  valid: 248  (0 from cache) invalid: 0    unknown: 0    time:    33.6                                                  ║
+[  Info  ] ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+[  Info  ] Printing JSON summary to out.json
+[  Info  ] Shutting down executor service.
