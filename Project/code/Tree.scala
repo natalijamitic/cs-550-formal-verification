@@ -16,6 +16,11 @@ sealed abstract class Tree {
         case Node(_, l, r) => l.size + BigInt(1) + r.size
     }).ensuring(_ == toList.length)
 
+    lazy val isEmpty: Boolean = (this match {
+        case Empty() => true
+        case Node(_, l, r) => false
+    }).ensuring(_ == (size == 0))
+
     def height: BigInt = (this match {
         case Empty() => BigInt(-1)
         case Node(k, l, r) => stainless.math.max(l.height , r.height) + 1

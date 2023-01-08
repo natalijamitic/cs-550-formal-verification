@@ -22,7 +22,7 @@ case class AVLTree private (val tree: Tree) extends AVLOperations {
         }
     }
 
-    override def isEmpty: Boolean = tree.size == 0
+    override def isEmpty: Boolean = tree.isEmpty
     override def size: BigInt = tree.size
     override def toSet: Set[BigInt] = tree.toSet
 }
