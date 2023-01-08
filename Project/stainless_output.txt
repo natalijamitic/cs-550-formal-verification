@@ -1,4 +1,4 @@
-carevic:/Project$ ../../stainless/stainless.sh *.scala  --timeout=10 --vc-cache=false --json=out.json
+user:/Project$ ../../stainless/stainless.sh code/*.scala --timeout=10 --vc-cache=false --solvers=smt-z3
 [  Info  ] Starting verification...
 [  Info  ] Verified: 248 / 248
 [  Info  ]   ┌───────────────────┐
