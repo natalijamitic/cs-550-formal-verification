@@ -1,7 +1,5 @@
 package project
 
-// ../../stainless/stainless.sh *.scala --watch --timeout=10
-
 import stainless.annotation._
 import stainless.collection._
 import stainless.lang._
