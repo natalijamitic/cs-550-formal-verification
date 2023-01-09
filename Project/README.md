@@ -15,7 +15,7 @@ Verification can be run in your favourite shell using the following command:
 stainless --solvers=smt-z3 --vc-cache=false --timeout=10 code/*.scala
 ```
 
-We also provide the output of the verification process in [`stainless_output`](stainless_output.txt).
+We also provide the output of the verification process in [`verification_results`](results/verification_results.txt), and the detailed version in [`verification_results_detailed`](results/verification_results_detailed.out).
 
 ## Authors
 - Filip Carevic (filip.carevic@epfl.ch)
